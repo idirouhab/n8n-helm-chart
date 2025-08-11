@@ -1,0 +1,147 @@
+# ----- Image -----
+image:
+  repository: n8nio/n8n
+  tag: "1.64.0"
+  pullPolicy: IfNotPresent
+
+# ----- Names -----
+nameOverride: ""
+fullnameOverride: ""
+
+# ----- Main replicas -----
+replicaCount: 1
+
+# ----- Multi-main -----
+multiMain:
+  enabled: true
+  replicas: 3
+  antiAffinity:
+    type: preferred
+  topologySpreadConstraints:
+    enabled: false
+    maxSkew: 1
+    whenUnsatisfiable: ScheduleAnyway
+
+# ----- Queue mode -----
+queueMode:
+  enabled: true
+  workerReplicaCount: 2
+
+# ----- Service -----
+service:
+  type: ClusterIP
+  port: 5678
+
+# ----- Ingress -----
+ingress:
+  enabled: false
+  hosts:
+    - host: n8n.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+# ----- Persistence -----
+persistence:
+  enabled: true
+  accessModes: ["ReadWriteOnce"]
+  size: 10Gi
+  storageClassName: ""
+
+# ----- Resources -----
+resources:
+  main:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  worker:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+# ----- Node placement -----
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# ----- Security -----
+securityContext:
+  enabled: true
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsGroup: 1000
+
+serviceAccount:
+  create: true
+
+# ----- Health checks -----
+probes:
+  liveness:
+    enabled: true
+    path: /healthz
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 6
+  readiness:
+    enabled: true
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 6
+
+# ----- Autoscaling -----
+hpa:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# ----- Pod Disruption Budget -----
+pdb:
+  enabled: true
+  minAvailable: 1
+
+# ----- App config -----
+config:
+  timezone: Europe/Madrid
+  extraEnv: []        # Remove DB_* and QUEUE_* here to avoid duplicate env warnings
+  extraEnvFrom: []
+
+# ----- Secrets -----
+secretRefs:
+  existingSecret: ""
+  env:
+    N8N_ENCRYPTION_KEY: "dev-very-long-random-key-please-change"
+    N8N_HOST: "n8n.local"
+    N8N_PORT: "5678"
+    N8N_PROTOCOL: "http"
+
+# ----- Database (PostgreSQL) -----
+database:
+  type: postgres
+  useExternal: true
+  host: "postgres-postgresql.n8n-test.svc.cluster.local"
+  port: 5432
+  database: n8n
+  user: n8n
+  passwordSecret:
+    name: "postgres-creds"
+    key: "password"
+
+# ----- Redis (for queue mode) -----
+redis:
+  enabled: false
+  useExternal: true
+  host: "redis-master.n8n-test.svc.cluster.local"
+  port: 6379
+  passwordSecret:
+    name: "redis-creds"
+    key: "password"

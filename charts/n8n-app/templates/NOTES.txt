@@ -1,0 +1,20 @@
+n8n is deploying 🚀
+
+1) Service (main):
+   kubectl get svc {{ include "n8n.fullname" . }}-main
+
+2) Port-forward:
+   kubectl port-forward svc/{{ include "n8n.fullname" . }}-main 5678:{{ .Values.service.port }}
+   open http://localhost:5678
+
+3) Ingress (if enabled):
+   open http{{ if .Values.ingress.tls }}s{{ end }}://{{ (index .Values.ingress.hosts 0).host }}
+
+4) Queue mode:
+   - Ensure Redis is reachable at {{ .Values.redis.host }}:{{ .Values.redis.port }}
+   - Worker deployment: {{ include "n8n.fullname" . }}-worker
+
+5) Multi-main:
+   Replicas: {{ ternary .Values.multiMain.replicas .Values.replicaCount .Values.multiMain.enabled }}
+
+Happy automating!

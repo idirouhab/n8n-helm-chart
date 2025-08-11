@@ -1,0 +1,330 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "n8n-app values schema",
+    "type": "object",
+    "properties": {
+        "image": {
+            "type": "object",
+            "properties": {
+                "repository": { "type": "string", "minLength": 1 },
+                "tag": { "type": "string", "minLength": 1 },
+                "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] }
+            },
+            "required": ["repository", "tag"]
+        },
+
+        "replicaCount": { "type": "integer", "minimum": 1 },
+
+        "multiMain": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "replicas": { "type": "integer", "minimum": 1 },
+                "antiAffinity": {
+                    "type": "object",
+                    "properties": {
+                        "type": { "type": "string", "enum": ["preferred", "required", "none"] }
+                    }
+                },
+                "topologySpreadConstraints": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "maxSkew": { "type": "integer", "minimum": 1 },
+                        "whenUnsatisfiable": { "type": "string", "enum": ["ScheduleAnyway", "DoNotSchedule"] }
+                    }
+                }
+            },
+            "required": ["enabled", "replicas"]
+        },
+
+        "queueMode": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "workerReplicaCount": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["enabled", "workerReplicaCount"]
+        },
+
+        "service": {
+            "type": "object",
+            "properties": {
+                "type": { "type": "string" },
+                "port": { "type": "integer", "minimum": 1, "maximum": 65535 },
+                "annotations": { "type": "object", "additionalProperties": true },
+                "sessionAffinity": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "timeoutSeconds": { "type": "integer", "minimum": 1 }
+                    },
+                    "required": []
+                }
+            },
+            "required": ["type", "port"]
+        },
+
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "className": { "type": "string" },
+                "annotations": { "type": "object", "additionalProperties": true },
+                "hosts": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "host": { "type": "string", "minLength": 1 },
+                            "paths": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "path": { "type": "string", "minLength": 1 },
+                                        "pathType": { "type": "string", "minLength": 1 }
+                                    },
+                                    "required": ["path", "pathType"]
+                                },
+                                "minItems": 1
+                            }
+                        },
+                        "required": ["host", "paths"]
+                    }
+                },
+                "tls": { "type": "array" },
+                "sticky": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "cookieName": { "type": "string" },
+                        "cookieExpires": { "type": "string" },
+                        "cookieMaxAge": { "type": "string" }
+                    }
+                }
+            },
+            "required": ["enabled", "hosts"]
+        },
+
+        "persistence": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "size": { "type": "string", "pattern": "^[0-9]+Gi$" },
+                "accessModes": { "type": "array", "items": { "type": "string" } },
+                "storageClassName": { "type": "string" },
+                "existingClaim": { "type": "string" }
+            },
+            "required": ["enabled"]
+        },
+
+        "resources": {
+            "type": "object",
+            "properties": {
+                "main": { "type": "object" },
+                "worker": { "type": "object" }
+            }
+        },
+
+        "nodeSelector": { "type": "object", "additionalProperties": { "type": "string" } },
+        "tolerations": { "type": "array" },
+        "affinity": { "type": "object" },
+        "podAnnotations": { "type": "object", "additionalProperties": true },
+        "podLabels": { "type": "object", "additionalProperties": true },
+
+        "securityContext": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "fsGroup": { "type": "integer", "minimum": 0 },
+                "runAsUser": { "type": "integer", "minimum": 0 },
+                "runAsGroup": { "type": "integer", "minimum": 0 }
+            }
+        },
+
+        "serviceAccount": {
+            "type": "object",
+            "properties": {
+                "create": { "type": "boolean" },
+                "name": { "type": "string" },
+                "annotations": { "type": "object", "additionalProperties": true }
+            }
+        },
+
+        "rbac": {
+            "type": "object",
+            "properties": {
+                "create": { "type": "boolean" }
+            }
+        },
+
+        "probes": {
+            "type": "object",
+            "properties": {
+                "liveness": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "path": { "type": "string" },
+                        "initialDelaySeconds": { "type": "integer", "minimum": 0 },
+                        "periodSeconds": { "type": "integer", "minimum": 1 },
+                        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+                        "failureThreshold": { "type": "integer", "minimum": 1 }
+                    }
+                },
+                "readiness": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": { "type": "boolean" },
+                        "path": { "type": "string" },
+                        "initialDelaySeconds": { "type": "integer", "minimum": 0 },
+                        "periodSeconds": { "type": "integer", "minimum": 1 },
+                        "timeoutSeconds": { "type": "integer", "minimum": 1 },
+                        "failureThreshold": { "type": "integer", "minimum": 1 }
+                    }
+                }
+            }
+        },
+
+        "hpa": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "minReplicas": { "type": "integer", "minimum": 1 },
+                "maxReplicas": { "type": "integer", "minimum": 1 },
+                "targetCPUUtilizationPercentage": { "type": "integer", "minimum": 1, "maximum": 100 },
+                "targetMemoryUtilizationPercentage": { "type": "integer", "minimum": 1, "maximum": 100 }
+            }
+        },
+
+        "config": {
+            "type": "object",
+            "properties": {
+                "timezone": { "type": "string" },
+                "extraEnv": { "type": "array" },
+                "extraEnvFrom": { "type": "array" }
+            }
+        },
+
+        "secretRefs": {
+            "type": "object",
+            "properties": {
+                "existingSecret": { "type": "string" },
+                "env": {
+                    "type": "object",
+                    "additionalProperties": { "type": "string" }
+                }
+            }
+        },
+
+        "database": {
+            "type": "object",
+            "properties": {
+                "type": { "type": "string", "enum": ["postgres"] },
+                "useExternal": { "type": "boolean" },
+                "host": { "type": "string" },
+                "port": { "type": "integer" },
+                "database": { "type": "string" },
+                "user": { "type": "string" },
+                "passwordSecret": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "key": { "type": "string" }
+                    },
+                    "required": ["name", "key"]
+                }
+            },
+            "required": ["type", "host", "port", "database", "user", "passwordSecret"]
+        },
+
+        "redis": {
+            "type": "object",
+            "properties": {
+                "enabled": { "type": "boolean" },
+                "useExternal": { "type": "boolean" },
+                "host": { "type": "string" },
+                "port": { "type": "integer" },
+                "passwordSecret": {
+                    "type": "object",
+                    "properties": {
+                        "name": { "type": "string" },
+                        "key": { "type": "string" }
+                    },
+                    "required": ["name", "key"]
+                }
+            }
+        }
+    },
+
+    "allOf": [
+        {
+            "if": {
+                "properties": { "multiMain": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } }
+            },
+            "then": {
+                "properties": {
+                    "queueMode": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] },
+                    "multiMain": { "properties": { "replicas": { "minimum": 2 } } }
+                },
+                "errorMessage": "multiMain.enabled=true requires queueMode.enabled=true and multiMain.replicas>=2"
+            }
+        },
+        {
+            "if": {
+                "properties": { "queueMode": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } }
+            },
+            "then": {
+                "properties": {
+                    "redis": {
+                        "type": "object",
+                        "properties": {
+                            "host": { "type": "string", "minLength": 1 },
+                            "passwordSecret": {
+                                "type": "object",
+                                "properties": {
+                                    "name": { "type": "string", "minLength": 1 },
+                                    "key": { "type": "string", "minLength": 1 }
+                                },
+                                "required": ["name", "key"]
+                            }
+                        },
+                        "required": ["host", "passwordSecret"]
+                    }
+                },
+                "errorMessage": "queueMode.enabled=true requires redis.host and redis.passwordSecret{name,key}"
+            }
+        },
+        {
+            "if": { "properties": { "ingress": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } } },
+            "then": {
+                "properties": {
+                    "ingress": {
+                        "properties": {
+                            "hosts": { "minItems": 1 }
+                        }
+                    }
+                },
+                "errorMessage": "ingress.enabled=true requires at least one hosts[] entry"
+            }
+        },
+        {
+            "if": { "properties": { "service": { "properties": { "sessionAffinity": { "properties": { "enabled": { "const": true } }, "required": ["enabled"] } } } } },
+            "then": {
+                "properties": {
+                    "service": {
+                        "properties": {
+                            "sessionAffinity": {
+                                "required": ["timeoutSeconds"]
+                            }
+                        }
+                    }
+                },
+                "errorMessage": "service.sessionAffinity.enabled=true requires timeoutSeconds"
+            }
+        }
+    ],
+
+    "additionalProperties": true
+}
