@@ -75,12 +75,14 @@ spec:
               value: {{ .Values.redis.host | quote }}
             - name: QUEUE_BULL_REDIS_PORT
               value: "{{ .Values.redis.port }}"
-            {{- if .Values.redis.passwordSecret.name }}
+            {{- with .Values.redis.passwordSecret }}
+            {{- if and .name .key }}
             - name: QUEUE_BULL_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.redis.passwordSecret.name }}
-                  key: {{ .Values.redis.passwordSecret.key }}
+                  name: {{ .name }}
+                  key: {{ .key }}
+            {{- end }}
             {{- end }}
 
             # --- N8N encryption key (must match mains) ---

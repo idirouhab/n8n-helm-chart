@@ -14,13 +14,14 @@ replicaCount: 1
 # ----- Multi-main -----
 multiMain:
   enabled: true
-  replicas: 3
+  replicas: 2
   antiAffinity:
     type: preferred
   topologySpreadConstraints:
     enabled: false
     maxSkew: 1
     whenUnsatisfiable: ScheduleAnyway
+
 
 # ----- Queue mode -----
 queueMode:
@@ -31,19 +32,28 @@ queueMode:
 service:
   type: ClusterIP
   port: 5678
+  annotations: {}
+  sessionAffinity:
+    enabled: false
+    timeoutSeconds: 10800
 
 # ----- Ingress -----
 ingress:
-  enabled: false
+  enabled: true
+  sticky:
+    enabled: false
+    cookieName: n8n_affinity
+    cookieExpires: "172800"  # 2 days in seconds
+    cookieMaxAge: "172800"   # 2 days in seconds
   hosts:
-    - host: n8n.local
+    - host: n8n.example.com   # <-- Change to your actual domain
       paths:
         - path: /
           pathType: Prefix
 
 # ----- Persistence -----
 persistence:
-  enabled: true
+  enabled: false
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
   storageClassName: ""
@@ -77,8 +87,16 @@ securityContext:
   runAsUser: 1000
   runAsGroup: 1000
 
+# ----- RBAC ServiceAccount & Network Policy -----
+rbac:
+  create: true
+
 serviceAccount:
   create: true
+  name: n8n
+
+networkPolicy:
+  enabled: false
 
 # ----- Health checks -----
 probes:
@@ -100,9 +118,9 @@ probes:
 # ----- Autoscaling -----
 hpa:
   enabled: true
-  minReplicas: 3
+  minReplicas: 2
   maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
+  targetCPUUtilizationPercentage: 90
 
 # ----- Pod Disruption Budget -----
 pdb:
@@ -112,15 +130,15 @@ pdb:
 # ----- App config -----
 config:
   timezone: Europe/Madrid
-  extraEnv: []        # Remove DB_* and QUEUE_* here to avoid duplicate env warnings
+  extraEnv: []
   extraEnvFrom: []
 
 # ----- Secrets -----
 secretRefs:
   existingSecret: ""
   env:
-    N8N_ENCRYPTION_KEY: "dev-very-long-random-key-please-change"
-    N8N_HOST: "n8n.local"
+    N8N_ENCRYPTION_KEY: "change-me-to-a-long-random-key"
+    N8N_HOST: "n8n.example.com"  # <-- Change to your actual domain
     N8N_PORT: "5678"
     N8N_PROTOCOL: "http"
 
@@ -128,20 +146,18 @@ secretRefs:
 database:
   type: postgres
   useExternal: true
-  host: "postgres-postgresql.n8n-test.svc.cluster.local"
+  host: "your-postgres-hostname"     # <-- Change to your actual PostgreSQL host
   port: 5432
   database: n8n
-  user: n8n
+  user: masteruser
   passwordSecret:
-    name: "postgres-creds"
-    key: "password"
+    name: "password"                 # <-- K8s Secret name
+    key: "password"                  # <-- Key inside the secret
 
 # ----- Redis (for queue mode) -----
 redis:
   enabled: false
   useExternal: true
-  host: "redis-master.n8n-test.svc.cluster.local"
+  host: "rmy-redis-cluster.devtii.0001.use1.cache.amazonaws.com"        # <-- Change to your actual Redis host
   port: 6379
-  passwordSecret:
-    name: "redis-creds"
-    key: "password"
+  passwordSecret: null
