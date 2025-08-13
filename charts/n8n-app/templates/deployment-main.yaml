@@ -1,3 +1,10 @@
+{{- /*
+Guard: SQLite is single-process; disallow queue mode (workers) and multi-main.
+*/ -}}
+{{- if and (not .Values.database.useExternal) (or .Values.queueMode.enabled .Values.multiMain.enabled) -}}
+{{- fail "Invalid config: SQLite cannot be used with queue mode or multiple mains. Set queueMode.enabled=false and multiMain.enabled=false, and replicaCount=1." -}}
+{{- end -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -53,6 +60,8 @@ spec:
                   name: {{ include "n8n.fullname" . }}
                   key: TZ
 
+            # ----------------- Database -----------------
+            {{- if .Values.database.useExternal }}
             - name: DB_TYPE
               value: postgresdb
             - name: DB_POSTGRESDB
@@ -68,15 +77,21 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.passwordSecret.name }}
                   key: {{ .Values.database.passwordSecret.key }}
+            {{- else }}
+            - name: DB_TYPE
+              value: sqlite
+            # SQLite stores its DB at /home/node/.n8n/database.sqlite
+            {{- end }}
 
+            # ----------------- Queue / Redis -----------------
             {{- if .Values.queueMode.enabled }}
             - name: EXECUTIONS_MODE
               value: queue
             - name: QUEUE_BULL_REDIS_HOST
               value: {{ .Values.redis.host | quote }}
             - name: QUEUE_BULL_REDIS_PORT
-              value: "{{ .Values.redis.port }}"
-           {{- with .Values.redis.passwordSecret }}
+              value: "{{ default 6379 .Values.redis.port }}"
+            {{- with .Values.redis.passwordSecret }}
             {{- if and .name .key }}
             - name: QUEUE_BULL_REDIS_PASSWORD
               valueFrom:
@@ -87,6 +102,7 @@ spec:
             {{- end }}
             {{- end }}
 
+            # ----------------- Core n8n secrets -----------------
             - name: N8N_ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
@@ -154,17 +170,21 @@ spec:
           resources:
             {{- toYaml .Values.resources.main | nindent 12 }}
 
-          {{- if .Values.persistence.enabled }}
+          # Persist n8n home for SQLite DB and files
           volumeMounts:
             - name: data
               mountPath: /home/node/.n8n
-          {{- end }}
 
+      # Volumes: prefer PVC, fallback to emptyDir if persistence disabled
       {{- if .Values.persistence.enabled }}
       volumes:
         - name: data
           persistentVolumeClaim:
             claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "n8n.fullname" . }}{{ end }}
+      {{- else }}
+      volumes:
+        - name: data
+          emptyDir: {}
       {{- end }}
 
       {{- with .Values.nodeSelector }}

@@ -25,7 +25,7 @@ multiMain:
 
 # ----- Queue mode -----
 queueMode:
-  enabled: true
+  enabled: false
   workerReplicaCount: 2
 
 # ----- Service -----
