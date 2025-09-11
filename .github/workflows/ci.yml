@@ -36,7 +36,12 @@ jobs:
           version: '3.12.1'
 
       - name: Validate Examples
-        run: ./scripts/validate-examples.sh
+        run: |
+          # Validate that example files are valid YAML
+          for example in examples/*.yaml; do
+            echo "Validating $example"
+            helm template test "./charts/n8n-app" -f "$example" --dry-run > /dev/null
+          done
 
   security-scan:
     runs-on: ubuntu-latest
@@ -53,7 +58,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
