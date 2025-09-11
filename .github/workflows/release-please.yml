@@ -43,6 +43,17 @@ jobs:
         with:
           version: '3.12.1'
 
+      - name: Update Chart Version
+        run: |
+          # Extract version from tag (remove 'v' prefix)
+          CHART_VERSION="${{ needs.release-please.outputs.tag_name }}"
+          CHART_VERSION="${CHART_VERSION#v}"
+          
+          # Update Chart.yaml version
+          sed -i "s/^version:.*/version: $CHART_VERSION/" charts/n8n-app/Chart.yaml
+          
+          echo "Updated chart version to: $CHART_VERSION"
+
       - name: Package Chart
         run: |
           helm package charts/n8n-app --destination ./charts/
@@ -51,19 +62,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ needs.release-please.outputs.tag_name }} charts/*.tgz
+          gh release upload ${{ needs.release-please.outputs.tag_name }} charts/*.tgz --clobber
 
       - name: Log in to Docker Hub
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "❌ DOCKERHUB_USERNAME or DOCKERHUB_TOKEN secrets not set"
+            exit 1
+          fi
+          echo "$DOCKERHUB_TOKEN" | helm registry login registry-1.docker.io -u "$DOCKERHUB_USERNAME" --password-stdin
 
       - name: Push to Docker Hub OCI Registry
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
           CHART_NAME=$(helm show chart charts/n8n-app | grep '^name:' | cut -d' ' -f2)
           CHART_VERSION=$(helm show chart charts/n8n-app | grep '^version:' | cut -d' ' -f2)
           
-          helm push charts/${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+          helm push charts/${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/$DOCKERHUB_USERNAME
           
-          echo "✅ Chart published to: oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
+          echo "✅ Chart published to: oci://registry-1.docker.io/$DOCKERHUB_USERNAME/${CHART_NAME}"
           echo "📦 Version: ${CHART_VERSION}"
-          echo "🔗 Docker Hub: https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
+          echo "🔗 Docker Hub: https://hub.docker.com/r/$DOCKERHUB_USERNAME/${CHART_NAME}"
