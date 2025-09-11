@@ -1,0 +1,39 @@
+name: Publish to Docker Hub
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  CHART_PATH: charts/n8n-app
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: 'v3.14.0'
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Package and push to Docker Hub
+        run: |
+          helm package ${{ env.CHART_PATH }}
+          CHART_NAME=$(helm show chart ${{ env.CHART_PATH }} | grep '^name:' | cut -d' ' -f2)
+          CHART_VERSION=$(helm show chart ${{ env.CHART_PATH }} | grep '^version:' | cut -d' ' -f2)
+          
+          helm push ${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+          
+          echo "✅ Chart published to: oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
+          echo "📦 Version: ${CHART_VERSION}"
+          echo "🔗 Docker Hub: https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
