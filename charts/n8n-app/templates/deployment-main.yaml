@@ -26,13 +26,15 @@ spec:
       app.kubernetes.io/component: main
   template:
     metadata:
+      annotations:
+        # Force pod recreation on config changes
+        rollme: {{ randAlphaNum 5 | quote }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         {{- include "n8n.labels" . | nindent 8 }}
         app.kubernetes.io/component: main
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
     spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ default (include "n8n.fullname" .) .Values.serviceAccount.name }}

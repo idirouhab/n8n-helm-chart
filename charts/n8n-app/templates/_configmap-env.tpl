@@ -33,6 +33,41 @@ Environment variables from ConfigMap for all components
     configMapKeyRef:
       name: {{ include "n8n.fullname" . }}
       key: DB_POSTGRESDB_USER
+{{- if .Values.database.ssl.enabled }}
+- name: DB_POSTGRESDB_SSL
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: DB_POSTGRESDB_SSL
+{{- if .Values.database.ssl.ca }}
+- name: DB_POSTGRESDB_SSL_CA
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: DB_POSTGRESDB_SSL_CA
+{{- end }}
+{{- if .Values.database.ssl.cert }}
+- name: DB_POSTGRESDB_SSL_CERT
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: DB_POSTGRESDB_SSL_CERT
+{{- end }}
+{{- if .Values.database.ssl.key }}
+- name: DB_POSTGRESDB_SSL_KEY
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: DB_POSTGRESDB_SSL_KEY
+{{- end }}
+{{- if not .Values.database.ssl.rejectUnauthorized }}
+- name: DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED
+{{- end }}
+{{- end }}
 - name: EXECUTIONS_MODE
   valueFrom:
     configMapKeyRef:
