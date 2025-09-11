@@ -1,0 +1,199 @@
+{{- /*
+Guard: This chart only supports queue mode with external PostgreSQL and Redis.
+*/ -}}
+{{- if not .Values.database.useExternal -}}
+{{- fail "Invalid config: This chart only supports queue mode with external PostgreSQL. Set database.useExternal=true and provide database.host." -}}
+{{- end -}}
+{{- if not .Values.redis.enabled -}}
+{{- fail "Invalid config: This chart requires Redis for queue mode. Set redis.enabled=true and provide redis.host." -}}
+{{- end -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "n8n.fullname" . }}-main
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
+    app.kubernetes.io/component: main
+spec:
+  replicas: {{ ternary .Values.multiMain.replicas .Values.replicaCount .Values.multiMain.enabled }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "n8n.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: main
+  template:
+    metadata:
+      labels:
+        {{- include "n8n.labels" . | nindent 8 }}
+        app.kubernetes.io/component: main
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ default (include "n8n.fullname" .) .Values.serviceAccount.name }}
+      {{- end }}
+
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+      {{- end }}
+
+      containers:
+        - name: n8n-main
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          env:
+            {{- if .Values.webhook.enabled }}
+            # Webhook configuration
+            {{- if .Values.webhook.url }}
+            - name: WEBHOOK_URL
+              value: {{ .Values.webhook.url | quote }}
+            {{- else if and .Values.ingress .Values.ingress.enabled (gt (len .Values.ingress.hosts) 0) }}
+            - name: WEBHOOK_URL
+              value: "https://{{ (index .Values.ingress.hosts 0).host }}/webhook"
+            {{- end }}
+            
+            {{- if .Values.webhook.testUrl }}
+            - name: WEBHOOK_TEST_URL
+              value: {{ .Values.webhook.testUrl | quote }}
+            {{- end }}
+            
+            {{- if .Values.webhook.timeout }}
+            - name: N8N_WEBHOOK_TIMEOUT
+              value: "{{ .Values.webhook.timeout }}"
+            {{- end }}
+            
+            {{- with .Values.webhook.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+            {{- end }}
+
+            # Shared configuration from ConfigMap
+            {{- include "n8n.sharedConfigMapEnv" . | nindent 12 }}
+            
+            # Main-specific configuration from ConfigMap
+            {{- include "n8n.mainConfigMapEnv" . | nindent 12 }}
+            
+            # Database password (secret)
+            - name: DB_POSTGRESDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.passwordSecret.name }}
+                  key: {{ .Values.database.passwordSecret.key }}
+            # Redis password (secret)
+            {{- with .Values.redis.passwordSecret }}
+            {{- if and .name .key }}
+            - name: QUEUE_BULL_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .name }}
+                  key: {{ .key }}
+            {{- end }}
+            {{- end }}
+            
+            # Health check settings (not in ConfigMap as it's optional)
+            {{- if .Values.redis.healthCheck.enabled }}
+            - name: QUEUE_HEALTH_CHECK_ACTIVE
+              value: "true"
+            - name: QUEUE_HEALTH_CHECK_PORT
+              value: "{{ .Values.redis.healthCheck.port }}"
+            {{- end }}
+            
+            # Redis-specific extra environment variables
+            {{- with .Values.redis.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+
+            # S3 External Storage
+            {{- include "n8n.s3Env" . | nindent 12 }}
+
+            # Executions Configuration  
+            {{- include "n8n.executionsEnv" . | nindent 12 }}
+
+            # License Configuration
+            {{- include "n8n.licenseEnv" . | nindent 12 }}
+
+            # Core n8n secrets
+            {{- include "n8n.coreSecretsEnv" . | nindent 12 }}
+
+            {{- with .Values.config.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+
+          {{- with .Values.config.extraEnvFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+          ports:
+            - containerPort: {{ .Values.service.port }}
+              name: http
+
+          # Probes
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+
+          {{- if .Values.probes.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+
+          {{- if .Values.probes.liveness.enabled }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: http
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+
+          resources:
+            {{- toYaml .Values.resources.main | nindent 12 }}
+
+          # Persist n8n home for SQLite DB and files
+          volumeMounts:
+            - name: data
+              mountPath: /home/node/.n8n
+
+      # Volumes: prefer PVC, fallback to emptyDir if persistence disabled
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "n8n.fullname" . }}{{ end }}
+      {{- else }}
+      volumes:
+        - name: data
+          emptyDir: {}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity: {{- toYaml . | nindent 8 }}
+      {{- end }}

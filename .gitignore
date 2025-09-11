@@ -1,0 +1,35 @@
+# ---- Helm build artifacts ----
+*.tgz
+charts/*/charts/
+charts/*/tmp/
+tmp/
+output/
+
+# ---- Local override values (never commit secrets) ----
+values-local.yaml
+values-dev*.yaml
+values-*.local.yaml
+values-*.override.yaml
+values-*-s3-*.yaml
+
+# ---- Kubernetes manifests generated for testing ----
+manifests/
+release.yaml
+testing/
+scripts/
+
+# ---- Logs ----
+*.log
+
+# ---- OS / Editor files ----
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- Misc temp files ----
+*.bak
+*.tmp
+*.old

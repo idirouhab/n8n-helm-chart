@@ -1,0 +1,20 @@
+apiVersion: v2
+name: n8n-app
+version: 0.2.0
+kubeVersion: ">=1.25.0-0"
+icon: https://raw.githubusercontent.com/n8n-io/n8n/master/packages/editor-ui/public/images/n8n-logo.png
+description: n8n with optional queue mode, multi-main, PostgreSQL/Redis, Ingress, HPA, PDB.
+type: application
+keywords:
+  - n8n
+  - automation
+  - queue
+  - redis
+  - postgres
+home: https://prompt-and-play.com
+sources:
+  - https://github.com/idirouhab/n8n-helm-chart
+maintainers:
+  - name: Idir Ouhab Meskin
+    email: ideas@prompt-and-play.com
+
