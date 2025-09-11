@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.4](https://github.com/idirouhab/n8n-helm-chart/compare/v0.6.3...v0.6.4) (2025-09-11)
+
+
+### Continuous Integration
+
+* add Docker Hub OCI publishing workflow integrated with release-please ([2180e38](https://github.com/idirouhab/n8n-helm-chart/commit/2180e38782fa9c31e9a6d6639fa073d79e98b421))
+
 ## [0.6.3](https://github.com/idirouhab/n8n-helm-chart/compare/v0.6.2...v0.6.3) (2025-09-11)
 
 
