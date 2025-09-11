@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.1](https://github.com/idirouhab/n8n-helm-chart/compare/v0.6.0...v0.6.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* add enable queue mode ([af13055](https://github.com/idirouhab/n8n-helm-chart/commit/af13055cd925162907e49267ed3a454ae34a6361))
+* add missing SSL environment variables to pod deployments ([d36be68](https://github.com/idirouhab/n8n-helm-chart/commit/d36be687dd82160a0b15df0d7474355f165b2b73))
+
 ## [0.6.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.5.0...v0.6.0) (2025-09-11)
 
 
