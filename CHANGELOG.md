@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/idirouhab/n8n-helm-chart/compare/v0.3.0...v0.3.1) (2025-09-11)
+
+
+### Miscellaneous Chores
+
+* Add extension to License file ([e34bcac](https://github.com/idirouhab/n8n-helm-chart/commit/e34bcacdf94672ff25e59a94321c6d1df68a8778))
+* fix format header in LICENSE.md ([ccf3d6a](https://github.com/idirouhab/n8n-helm-chart/commit/ccf3d6ab6dcd4456b70e9803ecfc742b0f05ff43))
+* Rename LICENSE to LICENSE.md ([e34bcac](https://github.com/idirouhab/n8n-helm-chart/commit/e34bcacdf94672ff25e59a94321c6d1df68a8778))
+
 ## [0.3.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.2.0...v0.3.0) (2025-09-11)
 
 
