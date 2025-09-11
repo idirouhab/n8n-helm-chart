@@ -43,7 +43,6 @@ jobs:
             echo "Validating $example"
             helm template test "./charts/n8n-app" -f "$example" --dry-run > /dev/null
           done
-
   security-scan:
     runs-on: ubuntu-latest
     steps:
