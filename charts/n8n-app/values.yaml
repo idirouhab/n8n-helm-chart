@@ -72,6 +72,27 @@ persistence:
   size: 10Gi
   storageClassName: ""
 
+# ----- External Volumes -----
+extraVolumes: []
+# Examples:
+# extraVolumes:
+#   - name: ssl-certs
+#     secret:
+#       secretName: ssl-certificates
+#   - name: custom-config
+#     configMap:
+#       name: n8n-config
+
+extraVolumeMounts: []
+# Examples:
+# extraVolumeMounts:
+#   - name: ssl-certs
+#     mountPath: /usr/local/share/ca-certificates
+#     readOnly: true
+#   - name: custom-config
+#     mountPath: /app/config
+#     readOnly: true
+
 # ----- Resources -----
 resources:
   main:
@@ -288,6 +309,13 @@ database:
   passwordSecret:
     name: "n8n-db-password"          # <-- K8s Secret name
     key: "password"                  # <-- Key inside the secret
+  # SSL configuration
+  ssl:
+    enabled: false                   # <-- Enable SSL connection
+    ca: ""                           # <-- Path to CA certificate file
+    cert: ""                         # <-- Path to client certificate file  
+    key: ""                          # <-- Path to client key file
+    rejectUnauthorized: true         # <-- Reject unauthorized SSL connections
 
 # ----- Redis (required for queue mode) -----
 redis:

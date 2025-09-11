@@ -15,6 +15,21 @@ data:
   DB_POSTGRESDB_HOST: {{ .Values.database.host | quote }}
   DB_POSTGRESDB_PORT: "{{ .Values.database.port }}"
   DB_POSTGRESDB_USER: {{ .Values.database.user | quote }}
+  {{- if .Values.database.ssl.enabled }}
+  DB_POSTGRESDB_SSL: "true"
+  {{- if .Values.database.ssl.ca }}
+  DB_POSTGRESDB_SSL_CA: {{ .Values.database.ssl.ca | quote }}
+  {{- end }}
+  {{- if .Values.database.ssl.cert }}
+  DB_POSTGRESDB_SSL_CERT: {{ .Values.database.ssl.cert | quote }}
+  {{- end }}
+  {{- if .Values.database.ssl.key }}
+  DB_POSTGRESDB_SSL_KEY: {{ .Values.database.ssl.key | quote }}
+  {{- end }}
+  {{- if not .Values.database.ssl.rejectUnauthorized }}
+  DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED: "false"
+  {{- end }}
+  {{- end }}
   
   # Queue configuration (shared across all pods)
   EXECUTIONS_MODE: "queue"

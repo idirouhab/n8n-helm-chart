@@ -175,18 +175,23 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /home/node/.n8n
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
 
       # Volumes: prefer PVC, fallback to emptyDir if persistence disabled
-      {{- if .Values.persistence.enabled }}
       volumes:
+        {{- if .Values.persistence.enabled }}
         - name: data
           persistentVolumeClaim:
             claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{ else }}{{ include "n8n.fullname" . }}{{ end }}
-      {{- else }}
-      volumes:
+        {{- else }}
         - name: data
           emptyDir: {}
-      {{- end }}
+        {{- end }}
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
 
       {{- with .Values.nodeSelector }}
       nodeSelector: {{- toYaml . | nindent 8 }}
