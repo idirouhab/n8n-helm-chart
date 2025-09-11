@@ -45,7 +45,7 @@ Note: This chart enforces external PostgreSQL and Redis for all deployments to e
 - Kubernetes secrets (see [Secrets Management](#secrets-management))
 
 ### Optional
-- Ingress controller (for external access)  
+- Ingress controller (for external access)
 - Cert-manager (for TLS)
 
 ## Webhook Processors Important Notice
@@ -135,6 +135,20 @@ helm install n8n ./charts/n8n-app \
   --set ingress.hosts[0].host=n8n.example.com
 ```
 
+#### AWS ElastiCache Configuration
+
+```bash
+# For AWS ElastiCache (TLS required)
+helm install n8n ./charts/n8n-app \
+  --set database.host=postgres.example.com \
+  --set database.passwordSecret.name=n8n-db-password \
+  --set redis.host=master.your-cluster.cache.amazonaws.com \
+  --set redis.tls=true \
+  --set secretRefs.existingSecret=n8n-core-secrets \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0].host=n8n.example.com
+```
+
 #### Custom Namespace Installation
 
 ```bash
@@ -201,7 +215,7 @@ helm install n8n ./charts/n8n-app \
 - **License Management**: Support for n8n Enterprise licenses via secrets or direct configuration
 - **Multi-Main Setup**: Advanced leader election and coordination for multiple main instances
 
-### Storage & Scalability  
+### Storage & Scalability
 - **S3 External Storage**: Full S3 integration for binary data with configurable modes
 - **Advanced Redis Configuration**: Comprehensive Redis setup with cluster support, authentication, and fine-tuned worker settings
 - **Webhook Configuration**: Enhanced webhook support with custom URLs, timeouts, and testing endpoints
@@ -271,8 +285,11 @@ helm install n8n ./charts/n8n-app \
 | `redis.useExternal`         | Use external Redis (always true) | `true`                                  |
 | `redis.host`                | Redis host (required)          | `""`                                       |
 | `redis.port`                | Redis port                     | `6379`                                     |
+| `redis.tls`                 | Enable TLS connection          | `false`                                    |
 | `redis.passwordSecret.name` | K8s secret containing password | `null`                                     |
 | `redis.passwordSecret.key`  | Key in secret for password     | `password`                                 |
+
+> **⚠️ Important for AWS ElastiCache**: Set `redis.tls: true` when using AWS ElastiCache or other managed Redis services that require encrypted connections. Without TLS, queue mode initialization will fail and the UI may return 404 errors.
 
 ### S3 Storage Configuration
 
@@ -471,7 +488,7 @@ config:
 
 **Proxy Configuration**
 - `HTTP_PROXY` - Proxy URL for unencrypted HTTP requests
-- `HTTPS_PROXY` - Proxy URL for encrypted HTTPS requests  
+- `HTTPS_PROXY` - Proxy URL for encrypted HTTPS requests
 - `ALL_PROXY` - Fallback proxy URL for all requests
 - `NO_PROXY` - Comma-separated list of hosts to bypass proxy
 
@@ -742,6 +759,12 @@ kubectl cp n8n-pod:/home/node/.n8n ./n8n-backup
 - Check Redis connectivity
 - Verify queue mode is enabled
 - Check worker logs for errors
+
+#### UI returns 404 errors via port-forward
+- **Most common cause**: Redis TLS configuration issue
+- Verify `redis.tls: true` is set.
+- Check Redis connection in main pod logs
+- Ensure Redis authentication is properly configured
 
 ### Debug Commands
 

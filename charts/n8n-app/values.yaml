@@ -181,7 +181,7 @@ probes:
       # Check if n8n worker process is still running
       type: "exec"
       command:
-        - "/bin/sh" 
+        - "/bin/sh"
         - "-c"
         - "pgrep -f 'n8n worker' > /dev/null"
       initialDelaySeconds: 60
@@ -314,7 +314,7 @@ database:
   ssl:
     enabled: false                   # <-- Enable SSL connection
     ca: ""                           # <-- Path to CA certificate file
-    cert: ""                         # <-- Path to client certificate file  
+    cert: ""                         # <-- Path to client certificate file
     key: ""                          # <-- Path to client key file
     rejectUnauthorized: true         # <-- Reject unauthorized SSL connections
 
@@ -332,7 +332,7 @@ redis:
   database: 0                                      # <-- Redis database number
   timeout: 10000                                   # <-- Redis timeout threshold (ms)
   prefix: ""                                       # <-- Queue key prefix
-  tls: false                                       # <-- Enable TLS
+  tls: false                                       # <-- Enable TLS (required for AWS ElastiCache and other managed Redis services)
   dualstack: false                                 # <-- Enable dual-stack (IPv4/IPv6)
   # Redis Cluster support (comma-separated list of host:port)
   clusterNodes: ""                                 # <-- For Redis Cluster mode
