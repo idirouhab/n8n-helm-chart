@@ -84,6 +84,10 @@ jobs:
           
           helm push charts/${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/$DOCKERHUB_USERNAME
           
-          echo "✅ Chart published to: oci://registry-1.docker.io/$DOCKERHUB_USERNAME/${CHART_NAME}"
-          echo "📦 Version: ${CHART_VERSION}"
+          helm package charts/n8n-app --version latest --destination ./charts/
+          helm push charts/${CHART_NAME}-latest.tgz oci://registry-1.docker.io/$DOCKERHUB_USERNAME
+          
+          echo "✅ Chart published with version tags:"
+          echo "📦 Specific version: oci://registry-1.docker.io/$DOCKERHUB_USERNAME/${CHART_NAME}:${CHART_VERSION}"
+          echo "📦 Latest: oci://registry-1.docker.io/$DOCKERHUB_USERNAME/${CHART_NAME}:latest"
           echo "🔗 Docker Hub: https://hub.docker.com/r/$DOCKERHUB_USERNAME/${CHART_NAME}"
