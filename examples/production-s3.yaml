@@ -143,8 +143,7 @@ config:
 executions:
   concurrency:
     productionLimit: 50
-  timeout:
-    max: 3600  # 1 hour
+  timeout: 3600  # 1 hour
   dataRetention:
     saveOnError: true
     saveOnSuccess: true
