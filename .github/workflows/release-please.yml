@@ -52,3 +52,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload ${{ needs.release-please.outputs.tag_name }} charts/*.tgz
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | helm registry login registry-1.docker.io -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      - name: Push to Docker Hub OCI Registry
+        run: |
+          CHART_NAME=$(helm show chart charts/n8n-app | grep '^name:' | cut -d' ' -f2)
+          CHART_VERSION=$(helm show chart charts/n8n-app | grep '^version:' | cut -d' ' -f2)
+          
+          helm push charts/${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+          
+          echo "✅ Chart published to: oci://registry-1.docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
+          echo "📦 Version: ${CHART_VERSION}"
+          echo "🔗 Docker Hub: https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/${CHART_NAME}"
