@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.1.0...v0.2.0) (2025-09-11)
+
+
+### Features
+
+* add n8n Helm chart with queue mode support and production examples ([07c7ab3](https://github.com/idirouhab/n8n-helm-chart/commit/07c7ab3ea82bda6c7895038a2bd2654ed08221a7))
+* enhance ci ([7a16ce9](https://github.com/idirouhab/n8n-helm-chart/commit/7a16ce91aad06385fe78f10d325c74e129e49609))
+
+
+### Bug Fixes
+
+* Add permissions to push security reports ([d0752d1](https://github.com/idirouhab/n8n-helm-chart/commit/d0752d15a69a733f667b4e77746550a4084c57d2))
+* Use proper value for executions timeout ([7ddb581](https://github.com/idirouhab/n8n-helm-chart/commit/7ddb5813f62370159616640d54a3a37c3d39be18))
+
 ## [Unreleased]
 
 ### Added
