@@ -12,6 +12,7 @@ fullnameOverride: ""
 queueMode:
   # Queue mode is always enabled in this chart
   # This chart only supports queue mode and queue+multi-main mode
+  enabled: true
   workerReplicaCount: 2
   # Worker concurrency (number of jobs each worker can handle simultaneously)
   workerConcurrency: 10
