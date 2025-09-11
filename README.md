@@ -168,6 +168,7 @@ helm install n8n ./charts/n8n-app \
   --set multiMain.enabled=true \
   --set multiMain.replicas=3 \
   --set queueMode.workerReplicaCount=4 \
+  --set queueMode.workerConcurrency=15 \
   --set database.host=postgres.example.com \
   --set database.passwordSecret.name=n8n-db-password \
   --set redis.host=redis.example.com \
@@ -183,6 +184,7 @@ helm install n8n ./charts/n8n-app \
   --set webhookProcessor.enabled=true \
   --set webhookProcessor.replicaCount=5 \
   --set queueMode.workerReplicaCount=10 \
+  --set queueMode.workerConcurrency=20 \
   --set hpa.webhookProcessor.enabled=true \
   --set hpa.webhookProcessor.maxReplicas=100 \
   --set database.host=postgres.example.com \
@@ -231,6 +233,7 @@ helm install n8n ./charts/n8n-app \
 | Parameter                      | Description                                 | Default |
 | ------------------------------ | ------------------------------------------- | ------- |
 | `queueMode.workerReplicaCount` | Number of worker pods                       | `2`     |
+| `queueMode.workerConcurrency`  | Max concurrent jobs per worker              | `10`    |
 
 ### Multi-Main Mode
 

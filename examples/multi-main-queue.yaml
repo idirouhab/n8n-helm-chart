@@ -8,8 +8,8 @@ multiMain:
   replicas: 3
 
 queueMode:
-  enabled: true
   workerReplicaCount: 10
+  workerConcurrency: 20
 
 webhookProcessor:
   enabled: true

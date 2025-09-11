@@ -37,7 +37,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["n8n"]
-          args: ["worker"]
+          args: 
+            - "worker"
+            - "--concurrency={{ .Values.queueMode.workerConcurrency }}"
 
           env:
             {{- if .Values.webhook.enabled }}

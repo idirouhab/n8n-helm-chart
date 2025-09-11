@@ -12,8 +12,8 @@
 
 # Basic deployment settings
 queueMode:
-  enabled: true
   workerReplicaCount: 1
+  workerConcurrency: 5
 
 # Database configuration (MUST be external)
 database:

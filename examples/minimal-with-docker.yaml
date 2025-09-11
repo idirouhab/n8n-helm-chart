@@ -8,8 +8,8 @@
 
 # Basic queue mode (minimum required)
 queueMode:
-  enabled: true
   workerReplicaCount: 1
+  workerConcurrency: 5
 
 # Minimal multi-main (required by schema)
 # multiMain:

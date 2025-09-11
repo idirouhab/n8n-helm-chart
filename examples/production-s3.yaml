@@ -9,8 +9,8 @@ multiMain:
 
 # Queue mode with multiple workers
 queueMode:
-  enabled: true
   workerReplicaCount: 5
+  workerConcurrency: 15
 
 # Load balancer must route /webhook/* to webhook processor service
 webhookProcessor:

@@ -13,6 +13,8 @@ queueMode:
   # Queue mode is always enabled in this chart
   # This chart only supports queue mode and queue+multi-main mode
   workerReplicaCount: 2
+  # Worker concurrency (number of jobs each worker can handle simultaneously)
+  workerConcurrency: 10
 
 # ----- Webhook processors (optional scaling layer) -----
 webhookProcessor:
