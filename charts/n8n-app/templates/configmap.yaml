@@ -15,6 +15,9 @@ data:
   DB_POSTGRESDB_HOST: {{ .Values.database.host | quote }}
   DB_POSTGRESDB_PORT: "{{ .Values.database.port }}"
   DB_POSTGRESDB_USER: {{ .Values.database.user | quote }}
+  {{- if .Values.database.schema }}
+  DB_POSTGRESDB_SCHEMA: {{ .Values.database.schema | quote }}
+  {{- end }}
   {{- if .Values.database.ssl.enabled }}
   DB_POSTGRESDB_SSL: "true"
   {{- if .Values.database.ssl.ca }}
@@ -83,13 +86,21 @@ data:
   {{- if .Values.webhook.url }}
   WEBHOOK_URL: {{ .Values.webhook.url | quote }}
   {{- else if and .Values.ingress .Values.ingress.enabled (gt (len .Values.ingress.hosts) 0) }}
-  WEBHOOK_URL: "https://{{ (index .Values.ingress.hosts 0).host }}/webhook"
-  {{- end }}
-  {{- if .Values.webhook.testUrl }}
-  WEBHOOK_TEST_URL: {{ .Values.webhook.testUrl | quote }}
+  WEBHOOK_URL: "https://{{ (index .Values.ingress.hosts 0).host }}"
   {{- end }}
   {{- if .Values.webhook.timeout }}
   N8N_WEBHOOK_TIMEOUT: "{{ .Values.webhook.timeout }}"
+  {{- end }}
+  {{- end }}
+  
+  # Editor Base URL (for proper webhook URL display in UI)
+  # Only set when external access is configured to avoid issues with internal-only deployments
+  {{- if and .Values.ingress .Values.ingress.enabled (gt (len .Values.ingress.hosts) 0) }}
+  N8N_EDITOR_BASE_URL: "https://{{ (index .Values.ingress.hosts 0).host }}"
+  {{- else if .Values.webhook.url }}
+  # If custom webhook URL is set, use it as editor base URL (since webhook.url is the domain)
+  {{- if hasPrefix "http" .Values.webhook.url }}
+  N8N_EDITOR_BASE_URL: {{ .Values.webhook.url | quote }}
   {{- end }}
   {{- end }}
   

@@ -185,13 +185,6 @@ Environment variables from ConfigMap for main pods only
       name: {{ include "n8n.fullname" . }}
       key: WEBHOOK_URL
 {{- end }}
-{{- if .Values.webhook.testUrl }}
-- name: WEBHOOK_TEST_URL
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "n8n.fullname" . }}
-      key: WEBHOOK_TEST_URL
-{{- end }}
 {{- if .Values.webhook.timeout }}
 - name: N8N_WEBHOOK_TIMEOUT
   valueFrom:
@@ -241,13 +234,6 @@ Environment variables from ConfigMap for webhook processor pods (similar to main
     configMapKeyRef:
       name: {{ include "n8n.fullname" . }}
       key: WEBHOOK_URL
-{{- end }}
-{{- if .Values.webhook.testUrl }}
-- name: WEBHOOK_TEST_URL
-  valueFrom:
-    configMapKeyRef:
-      name: {{ include "n8n.fullname" . }}
-      key: WEBHOOK_TEST_URL
 {{- end }}
 {{- if .Values.webhook.timeout }}
 - name: N8N_WEBHOOK_TIMEOUT

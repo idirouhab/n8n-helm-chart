@@ -273,6 +273,7 @@ helm install n8n ./charts/n8n-app \
 | `database.host`                | PostgreSQL host (required)     | `""`                                       |
 | `database.port`                | PostgreSQL port                | `5432`                                     |
 | `database.database`            | Database name                  | `n8n`                                      |
+| `database.schema`              | PostgreSQL schema name         | `"public"`                                 |
 | `database.user`                | Database user                  | `n8n`                                      |
 | `database.passwordSecret.name` | K8s secret containing password | `"n8n-db-password"`                        |
 | `database.passwordSecret.key`  | Key in secret for password     | `password`                                 |

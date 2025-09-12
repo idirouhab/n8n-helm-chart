@@ -219,10 +219,9 @@ pdb:
 webhook:
   # Enable webhook functionality
   enabled: true
-  # Custom webhook URL (if not set, will use ingress host + /webhook)
+  # Custom webhook URL base domain (if not set, will use ingress host)
+  # Format: https://your-domain.com (n8n adds /webhook path automatically)
   url: ""
-  # Webhook test URL (for testing webhooks with different URL)
-  testUrl: ""
   # Timeout for webhook requests in milliseconds
   timeout: 120000
   # Additional webhook environment variables
@@ -306,6 +305,7 @@ database:
   host: "your-postgres-hostname"     # <-- Change to your actual PostgreSQL host
   port: 5432
   database: n8n
+  schema: "public"                   # <-- PostgreSQL schema name
   user: n8n
   passwordSecret:
     name: "n8n-db-password"          # <-- K8s Secret name

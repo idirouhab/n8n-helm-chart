@@ -54,20 +54,7 @@ spec:
 
           env:
             {{- if .Values.webhook.enabled }}
-            # Webhook configuration
-            {{- if .Values.webhook.url }}
-            - name: WEBHOOK_URL
-              value: {{ .Values.webhook.url | quote }}
-            {{- else if and .Values.ingress .Values.ingress.enabled (gt (len .Values.ingress.hosts) 0) }}
-            - name: WEBHOOK_URL
-              value: "https://{{ (index .Values.ingress.hosts 0).host }}/webhook"
-            {{- end }}
-            
-            {{- if .Values.webhook.testUrl }}
-            - name: WEBHOOK_TEST_URL
-              value: {{ .Values.webhook.testUrl | quote }}
-            {{- end }}
-            
+            # Webhook timeout (other webhook config comes from ConfigMap)
             {{- if .Values.webhook.timeout }}
             - name: N8N_WEBHOOK_TIMEOUT
               value: "{{ .Values.webhook.timeout }}"
