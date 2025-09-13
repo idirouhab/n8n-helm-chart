@@ -48,8 +48,6 @@ jobs:
           # Extract version from tag (remove 'v' prefix)
           CHART_VERSION="${{ needs.release-please.outputs.tag_name }}"
           CHART_VERSION="${CHART_VERSION#v}"
-          
-          # Update Chart.yaml version
           sed -i "s/^version:.*/version: $CHART_VERSION/" charts/n8n-app/Chart.yaml
           
           echo "Updated chart version to: $CHART_VERSION"
@@ -75,15 +73,33 @@ jobs:
           fi
           echo "$DOCKERHUB_TOKEN" | helm registry login registry-1.docker.io -u "$DOCKERHUB_USERNAME" --password-stdin
 
-      - name: Push to Docker Hub OCI Registry
+      - name: Push chart to Docker Hub OCI
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          CHART_NAME=$(helm show chart charts/n8n-app | grep '^name:' | cut -d' ' -f2)
-          CHART_VERSION=$(helm show chart charts/n8n-app | grep '^version:' | cut -d' ' -f2)
-          
-          helm push charts/${CHART_NAME}-${CHART_VERSION}.tgz oci://registry-1.docker.io/$DOCKERHUB_USERNAME
-          
-          echo "✅ Chart published to: oci://registry-1.docker.io/$DOCKERHUB_USERNAME/${CHART_NAME}"
-          echo "📦 Version: ${CHART_VERSION}"
-          echo "🔗 Docker Hub: https://hub.docker.com/r/$DOCKERHUB_USERNAME/${CHART_NAME}"
+          CHART_NAME=$(helm show chart charts/n8n-app | awk '/^name:/{print $2}')
+          CHART_VERSION=$(helm show chart charts/n8n-app | awk '/^version:/{print $2}')
+          helm push "charts/${CHART_NAME}-${CHART_VERSION}.tgz" "oci://registry-1.docker.io/${DOCKERHUB_USERNAME}"
+          echo "✅ Chart published: oci://registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:${CHART_VERSION}"
+          echo "🔗 Docker Hub repo: https://hub.docker.com/repository/docker/${DOCKERHUB_USERNAME}/${CHART_NAME}/general"
+
+      - name: Install ORAS
+        uses: oras-project/setup-oras@v1
+        with:
+          version: v1.2.0
+
+      - name: Tag Helm chart as :latest
+        if: ${{ !contains(needs.release-please.outputs.tag_name, '-') }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          CHART_NAME=$(helm show chart charts/n8n-app | awk '/^name:/{print $2}')
+          CHART_VERSION=$(helm show chart charts/n8n-app | awk '/^version:/{print $2}')
+          echo "$DOCKERHUB_TOKEN" | oras login registry-1.docker.io -u "$DOCKERHUB_USERNAME" --password-stdin
+
+          SRC="registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:${CHART_VERSION}"
+          DST="registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:latest"
+
+          oras copy "oci://${SRC}" "oci://${DST}"
+          echo "🔖 Tagged oci://${SRC} as oci://${DST}"
