@@ -86,7 +86,7 @@ jobs:
       - name: Install ORAS
         uses: oras-project/setup-oras@v1
         with:
-          version: latest
+          version: v1.2.2
 
       - name: Tag Helm chart as :latest
         if: ${{ !contains(needs.release-please.outputs.tag_name, '-') }}
