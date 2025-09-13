@@ -101,5 +101,5 @@ jobs:
           SRC="registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:${CHART_VERSION}"
           DST="registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:latest"
 
-          oras copy "oci://${SRC}" "oci://${DST}"
-          echo "🔖 Tagged oci://${SRC} as oci://${DST}"
+          oras copy "${SRC}" "${DST}"
+          echo "🔖 Tagged ${SRC} as ${DST}"
