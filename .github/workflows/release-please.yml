@@ -90,10 +90,10 @@ jobs:
 
           # Use sed to update version, ensuring it works even if version field is missing
           if grep -q "^version:" charts/n8n-app/Chart.yaml; then
-            sed -i "s/^version:.*/version: $CHART_VERSION/" charts/n8n-app/Chart.yaml
+            sed -i "s/^version:.*/version: \"$CHART_VERSION\"/" charts/n8n-app/Chart.yaml
           else
             # Insert version after name line if it doesn't exist
-            sed -i "/^name:/a version: $CHART_VERSION" charts/n8n-app/Chart.yaml
+            sed -i "/^name:/a version: \"$CHART_VERSION\"" charts/n8n-app/Chart.yaml
           fi
 
           echo "After update:"
