@@ -10,20 +10,49 @@ permissions:
   pull-requests: write
   id-token: write
   actions: read
+  packages: write
 
 jobs:
   release-please:
     runs-on: ubuntu-latest
     outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
+      release_created: ${{ steps.check.outputs.release_created }}
+      tag_name: ${{ steps.check.outputs.tag_name }}
     steps:
-      - name: Release Please
-        id: release
-        uses: googleapis/release-please-action@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          config-file: release-please-config.json
-          manifest-file: .release-please-manifest.json
+          fetch-depth: 0
+
+      - name: Check if release needed
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "Latest tag: $LATEST_TAG"
+
+          # Get current version from manifest
+          CURRENT_VERSION=$(jq -r '."."' .release-please-manifest.json)
+          echo "Current version: $CURRENT_VERSION"
+
+          # Check if we need a release
+          if [ "$LATEST_TAG" != "v$CURRENT_VERSION" ]; then
+            echo "release_created=true" >> $GITHUB_OUTPUT
+            echo "tag_name=v$CURRENT_VERSION" >> $GITHUB_OUTPUT
+
+            # Create release using gh CLI
+            gh release create "v$CURRENT_VERSION" \
+              --title "$CURRENT_VERSION" \
+              --notes "Release $CURRENT_VERSION" \
+              --repo "$GITHUB_REPOSITORY"
+
+            echo "✅ Created release v$CURRENT_VERSION"
+          else
+            echo "release_created=false" >> $GITHUB_OUTPUT
+            echo "No new release needed"
+          fi
 
   publish:
     runs-on: ubuntu-latest
