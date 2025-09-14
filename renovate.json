@@ -1,0 +1,91 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 3,
+  "prHourlyLimit": 2,
+  "timezone": "UTC",
+  "schedule": ["before 6am on monday"],
+  "assigneesFromCodeOwners": true,
+  "reviewersFromCodeOwners": true,
+  "semanticCommits": "enabled",
+  "commitMessagePrefix": "chore(deps):",
+  "packageRules": [
+    {
+      "description": "Group Helm chart dependencies",
+      "matchManagers": ["helm-values"],
+      "matchFileNames": ["charts/**/Chart.yaml"],
+      "groupName": "helm-chart-dependencies",
+      "commitMessageTopic": "Helm chart dependencies"
+    },
+    {
+      "description": "Group GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions",
+      "commitMessageTopic": "GitHub Actions",
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Docker image updates",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["n8nio/n8n"],
+      "groupName": "n8n-docker-image",
+      "commitMessageTopic": "n8n Docker image",
+      "schedule": ["every weekend"],
+      "prPriority": 10
+    },
+    {
+      "description": "Auto-merge patch updates",
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Require manual approval for major updates",
+      "matchUpdateTypes": ["major"],
+      "reviewersFromCodeOwners": true,
+      "addLabels": ["breaking-change"]
+    }
+  ],
+  "helm-values": {
+    "fileMatch": ["charts/.*/values\\.yaml$"]
+  },
+  "regexManagers": [
+    {
+      "description": "Update n8n version in Chart.yaml appVersion",
+      "fileMatch": ["^charts/.*/Chart\\.yaml$"],
+      "matchStrings": [
+        "appVersion:\\s*\"?(?<currentValue>[^\"\\s]+)\"?\\s*#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)"
+      ],
+      "datasourceTemplate": "docker",
+      "depNameTemplate": "n8nio/n8n",
+      "versioningTemplate": "semver"
+    },
+    {
+      "description": "Update tool versions in Makefile and workflows",
+      "fileMatch": ["^Makefile$", "^\\.github/workflows/.*\\.ya?ml$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+.+version[:\\s]*['\"]?(?<currentValue>[^'\"\\s]+)"
+      ]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Helm version in GitHub Actions",
+      "fileMatch": ["^\\.github/workflows/.*\\.ya?ml$"],
+      "matchStrings": [
+        "version:\\s*v?(?<currentValue>[0-9]+\\.[0-9]+\\.[0-9]+)\\s*#\\s*helm"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "helm/helm",
+      "extractVersionTemplate": "^v(?<version>.*)$"
+    }
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security"]
+  },
+  "osvVulnerabilityAlerts": true
+}

@@ -1,0 +1,20 @@
+# Code owners for automatic review requests
+
+# Global ownership
+* @idirouhab
+
+# Helm charts
+/charts/ @idirouhab
+
+# GitHub workflows
+/.github/ @idirouhab
+
+# Documentation
+*.md @idirouhab
+/examples/ @idirouhab
+
+# Security and configuration files
+/SECURITY.md @idirouhab
+/CODE_OF_CONDUCT.md @idirouhab
+/.pre-commit-config.yaml @idirouhab
+/renovate.json @idirouhab
