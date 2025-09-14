@@ -46,15 +46,6 @@ jobs:
         with:
           version: '3.12.1'
 
-      - name: Update Chart Version
-        run: |
-          # Extract version from tag (remove 'v' prefix)
-          CHART_VERSION="${{ needs.release-please.outputs.tag_name }}"
-          CHART_VERSION="${CHART_VERSION#v}"
-          sed -i "s/^version:.*/version: $CHART_VERSION/" charts/n8n-app/Chart.yaml
-          
-          echo "Updated chart version to: $CHART_VERSION"
-
       - name: Package Chart
         run: |
           helm package charts/n8n-app --destination ./charts/
