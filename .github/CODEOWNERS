@@ -16,5 +16,4 @@
 # Security and configuration files
 /SECURITY.md @idirouhab
 /CODE_OF_CONDUCT.md @idirouhab
-/.pre-commit-config.yaml @idirouhab
 /renovate.json @idirouhab

@@ -68,9 +68,9 @@ This Helm chart includes several security features and considerations:
 
 ## Additional Security Resources
 
-- [n8n Security Documentation](https://docs.n8n.io/security/)
+- [n8n Security Documentation](https://docs.n8n.io/privacy-security/)
 - [Kubernetes Security Best Practices](https://kubernetes.io/docs/concepts/security/)
-- [Helm Security Considerations](https://helm.sh/docs/topics/securing_installation/)
+- [Helm Security Considerations](https://v2.helm.sh/docs/securing_installation/)
 
 ## Disclaimer
 
