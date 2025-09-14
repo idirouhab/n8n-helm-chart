@@ -16,6 +16,13 @@
         {"type": "test", "section": "Tests"},
         {"type": "build", "section": "Build System"},
         {"type": "ci", "section": "Continuous Integration"}
+      ],
+      "extra-files": [
+        {
+          "type": "yaml",
+          "path": "charts/n8n-app/Chart.yaml",
+          "jsonpath": "$.version"
+        }
       ]
     }
   }
