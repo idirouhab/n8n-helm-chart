@@ -82,12 +82,31 @@ jobs:
           # Extract version from tag (remove 'v' prefix)
           CHART_VERSION="${{ needs.release-please.outputs.tag_name }}"
           CHART_VERSION="${CHART_VERSION#v}"
+
+          echo "Tag name: ${{ needs.release-please.outputs.tag_name }}"
+          echo "Chart version: $CHART_VERSION"
+          echo "Before update:"
+          cat charts/n8n-app/Chart.yaml | grep "^version:"
+
           sed -i "s/^version:.*/version: $CHART_VERSION/" charts/n8n-app/Chart.yaml
-          
+
+          echo "After update:"
+          cat charts/n8n-app/Chart.yaml | grep "^version:"
           echo "Updated chart version to: $CHART_VERSION"
 
       - name: Package Chart
         run: |
+          # Validate chart before packaging
+          helm lint charts/n8n-app
+
+          # Verify version is set
+          CHART_VERSION=$(grep "^version:" charts/n8n-app/Chart.yaml | awk '{print $2}')
+          if [ -z "$CHART_VERSION" ]; then
+            echo "❌ Chart version is empty"
+            exit 1
+          fi
+          echo "📦 Packaging chart version: $CHART_VERSION"
+
           helm package charts/n8n-app --destination ./charts/
 
       - name: Generate hashes
