@@ -42,10 +42,11 @@ jobs:
             echo "release_created=true" >> $GITHUB_OUTPUT
             echo "tag_name=v$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
-            # Create release using gh CLI
+            # Create release as draft using gh CLI
             gh release create "v$CURRENT_VERSION" \
               --title "$CURRENT_VERSION" \
               --notes "Release $CURRENT_VERSION" \
+              --draft \
               --repo "$GITHUB_REPOSITORY"
 
             echo "✅ Created release v$CURRENT_VERSION"
@@ -165,6 +166,13 @@ jobs:
           fi
 
           echo "🔐 Chart artifacts signed with Cosign"
+
+      - name: Publish Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit ${{ needs.release-please.outputs.tag_name }} --draft=false
+          echo "📦 Release ${{ needs.release-please.outputs.tag_name }} published"
 
   # SLSA provenance generation as separate job
   provenance:
