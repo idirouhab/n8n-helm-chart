@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.10.0...v0.11.0) (2025-09-13)
+
+
+### Features
+
+* Update README.md with example to install helm chart ([91b11bb](https://github.com/idirouhab/n8n-helm-chart/commit/91b11bb040647749aeb9beac877ab4f459074071))
+
 ## [0.10.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.9.3...v0.10.0) (2025-09-13)
 
 
