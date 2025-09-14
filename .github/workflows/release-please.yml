@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: release-please
     if: ${{ needs.release-please.outputs.release_created }}
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -133,11 +135,28 @@ jobs:
 
           echo "🔐 Chart artifacts signed with Cosign"
 
-      - name: Generate SLSA provenance
-        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.10.0
+  # SLSA provenance generation as separate job
+  provenance:
+    needs: [release-please, publish]
+    if: ${{ needs.release-please.outputs.release_created }}
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.10.0
+    with:
+      base64-subjects: ${{ needs.publish.outputs.hashes }}
+      provenance-name: "n8n-helm-chart.intoto.jsonl"
+
+  upload-provenance:
+    runs-on: ubuntu-latest
+    needs: [release-please, provenance]
+    if: ${{ needs.release-please.outputs.release_created }}
+    steps:
+      - name: Download provenance
+        uses: actions/download-artifact@v4
         with:
-          base64-subjects: ${{ steps.hash.outputs.hashes }}
-          provenance-name: "n8n-helm-chart.intoto.jsonl"
+          name: n8n-helm-chart.intoto.jsonl
 
       - name: Upload provenance to release
         env:
