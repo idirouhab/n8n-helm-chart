@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.3...v1.1.4) (2025-09-15)
+
+
+### Bug Fixes
+
+* Fix release script ([f1d03a7](https://github.com/idirouhab/n8n-helm-chart/commit/f1d03a71675abf8c58270d6ec6bc1892e4fca717))
+
 ## [1.1.3](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.2...v1.1.3) (2025-09-15)
 
 
