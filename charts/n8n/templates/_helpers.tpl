@@ -48,3 +48,14 @@ Chart name and version
 {{- define "n8n.chart" -}}
 {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "n8n.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "n8n.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- .Values.serviceAccount.name }}
+{{- end }}
+{{- end -}}

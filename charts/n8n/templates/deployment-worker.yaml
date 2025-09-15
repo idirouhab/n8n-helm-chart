@@ -21,8 +21,8 @@ spec:
         {{- include "n8n.labels" . | nindent 8 }}
         app.kubernetes.io/component: worker
     spec:
-      {{- if .Values.serviceAccount.create }}
-      serviceAccountName: {{ default (include "n8n.fullname" .) .Values.serviceAccount.name }}
+      {{- with include "n8n.serviceAccountName" . }}
+      serviceAccountName: {{ . }}
       {{- end }}
 
       {{- if .Values.securityContext.enabled }}

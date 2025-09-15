@@ -459,7 +459,33 @@ When S3 is configured, the following environment variables are automatically set
 | `serviceAccount.annotations`       | Additional service account annotations | `{}`         |
 | `rbac.create`                      | Create RBAC resources                 | `true`       |
 
-The service account is configured with minimal required permissions:
+The chart supports three service account configuration scenarios:
+
+#### Scenario 1: Create New Service Account (Default)
+Chart creates and manages the service account:
+```yaml
+serviceAccount:
+  create: true
+  name: "n8n"  # Custom name, or leave empty to use chart fullname
+```
+
+#### Scenario 2: Use Existing/Managed Service Account
+Perfect for Terraform-managed infrastructure where service accounts are created externally:
+```yaml
+serviceAccount:
+  create: false
+  name: "my-terraform-service-account"  # Name of existing service account
+```
+
+#### Scenario 3: No Service Account
+Pods run with default Kubernetes permissions:
+```yaml
+serviceAccount:
+  create: false
+  name: ""  # Empty or omit entirely
+```
+
+**RBAC Permissions**: When `rbac.create: true`, the service account gets minimal required permissions:
 - **ConfigMaps**: `get`, `list` - For reading timezone and configuration
 - **Secrets**: `get`, `list` - For reading database passwords and encryption keys
 
