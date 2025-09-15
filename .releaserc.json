@@ -7,7 +7,7 @@
     [
       "@semantic-release/exec",
       {
-        "verifyReleaseCmd": "echo ${nextRelease.version} > charts/n8n/Chart.yaml.tmp && sed 's/^version:.*/version: ${nextRelease.version}/' charts/n8n/Chart.yaml >> charts/n8n/Chart.yaml.tmp && mv charts/n8n/Chart.yaml.tmp charts/n8n/Chart.yaml"
+        "verifyReleaseCmd": "sed 's/^version:.*/version: ${nextRelease.version}/' charts/n8n/Chart.yaml > charts/n8n/Chart.yaml.tmp && mv charts/n8n/Chart.yaml.tmp charts/n8n/Chart.yaml"
       }
     ],
     [
