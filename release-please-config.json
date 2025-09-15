@@ -20,7 +20,7 @@
       "extra-files": [
         {
           "type": "yaml",
-          "path": "charts/n8n-app/Chart.yaml",
+          "path": "charts/n8n/Chart.yaml",
           "jsonpath": "$.version"
         }
       ]

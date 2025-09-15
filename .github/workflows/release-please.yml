@@ -48,7 +48,7 @@ jobs:
 
       - name: Package Chart
         run: |
-          helm package charts/n8n-app --destination ./charts/
+          helm package charts/n8n --destination ./charts/
 
       - name: Upload Release Assets
         env:
@@ -71,9 +71,10 @@ jobs:
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
         run: |
-          CHART_NAME=$(helm show chart charts/n8n-app | awk '/^name:/{print $2}')
-          CHART_VERSION=$(helm show chart charts/n8n-app | awk '/^version:/{print $2}')
-          helm push "charts/${CHART_NAME}-${CHART_VERSION}.tgz" "oci://registry-1.docker.io/${DOCKERHUB_USERNAME}"
+          CHART_NAME=$(helm show chart charts/n8n | awk '/^name:/{print $2}')
+          CHART_VERSION=$(helm show chart charts/n8n | awk '/^version:/{print $2}')
+
+          helm push "charts/${CHART_NAME}-${CHART_VERSION}.tgz" "oci://registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}"
           echo "✅ Chart published: oci://registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:${CHART_VERSION}"
           echo "🔗 Docker Hub repo: https://hub.docker.com/repository/docker/${DOCKERHUB_USERNAME}/${CHART_NAME}/general"
 
@@ -88,8 +89,8 @@ jobs:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          CHART_NAME=$(helm show chart charts/n8n-app | awk '/^name:/{print $2}')
-          CHART_VERSION=$(helm show chart charts/n8n-app | awk '/^version:/{print $2}')
+          CHART_NAME=$(helm show chart charts/n8n | awk '/^name:/{print $2}')
+          CHART_VERSION=$(helm show chart charts/n8n | awk '/^version:/{print $2}')
           echo "$DOCKERHUB_TOKEN" | oras login registry-1.docker.io -u "$DOCKERHUB_USERNAME" --password-stdin
 
           SRC="registry-1.docker.io/${DOCKERHUB_USERNAME}/${CHART_NAME}:${CHART_VERSION}"

@@ -23,7 +23,7 @@ Relates to # (issue)
 ## Testing Performed
 
 ### Chart Validation
-- [ ] `helm lint charts/n8n-app` passes
+- [ ] `helm lint charts/n8n` passes
 - [ ] `./scripts/validate-examples.sh` passes
 - [ ] Template rendering works with all examples
 

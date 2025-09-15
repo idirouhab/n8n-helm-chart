@@ -16,7 +16,7 @@ kubectl create secret generic n8n-core-secrets \
   --from-literal=N8N_PROTOCOL="https"
 
 # Install the chart from OCI registry
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --set database.host=postgres.example.com \
   --set database.passwordSecret.name=n8n-db-password \
   --set redis.host=redis.example.com \
@@ -39,7 +39,7 @@ cd n8n-helm-chart
 cp examples/production-aws.yaml my-values.yaml
 
 # 3. Deploy
-helm install n8n ./charts/n8n-app -f my-values.yaml
+helm install n8n ./charts/n8n -f my-values.yaml
 ```
 
 [See all available examples](./examples/)
@@ -128,7 +128,7 @@ nano examples/create-secrets.sh
 
 ```bash
 # List available chart versions from Docker Hub
-helm show chart oci://registry-1.docker.io/idirouhab/n8n-app
+helm show chart oci://registry-1.docker.io/idirouhab/n8n
 ```
 
 ### 2. Create Required Secrets
@@ -155,7 +155,7 @@ kubectl create secret generic n8n-core-secrets \
 #### Basic Queue Mode (Default)
 
 ```bash
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --set database.host=postgres.example.com \
   --set database.passwordSecret.name=n8n-db-password \
   --set redis.host=redis.example.com \
@@ -168,7 +168,7 @@ helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
 
 ```bash
 # For AWS ElastiCache (TLS required)
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --set database.host=postgres.example.com \
   --set database.passwordSecret.name=n8n-db-password \
   --set redis.host=master.your-cluster.cache.amazonaws.com \
@@ -182,7 +182,7 @@ helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
 
 ```bash
 # Install a specific version
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app --version 0.9.2
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n --version 0.9.2
 ```
 
 #### Custom Namespace Installation
@@ -198,7 +198,7 @@ kubectl create secret generic n8n-core-secrets --namespace n8n-production \
   --from-literal=N8N_PROTOCOL="https"
 
 # Install in custom namespace
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --namespace n8n-production \
   --set database.host=postgres.example.com \
   --set database.passwordSecret.name=n8n-db-password \
@@ -216,16 +216,16 @@ Use the provided development configuration:
 # Using git repository for development
 git clone https://github.com/idirouhab/n8n-helm-chart.git
 cd n8n-helm-chart
-helm install n8n ./charts/n8n-app -f values-dev.yaml
+helm install n8n ./charts/n8n -f values-dev.yaml
 
 # Or from OCI registry with custom values
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app -f my-dev-values.yaml
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n -f my-dev-values.yaml
 ```
 
 #### High Availability (Multi-Main Mode)
 
 ```bash
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --set multiMain.enabled=true \
   --set multiMain.replicas=3 \
   --set queueMode.workerReplicaCount=4 \
@@ -241,7 +241,7 @@ helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
 #### Ultra High-Throughput (Webhook Processor Mode)
 
 ```bash
-helm install n8n oci://registry-1.docker.io/idirouhab/n8n-app \
+helm install n8n oci://registry-1.docker.io/idirouhab/n8n \
   --set webhookProcessor.enabled=true \
   --set webhookProcessor.replicaCount=5 \
   --set queueMode.workerReplicaCount=10 \
@@ -770,7 +770,7 @@ kubectl scale deployment n8n-main --replicas=3
 
 ```bash
 # Update chart values
-helm upgrade n8n ./charts/n8n-app \
+helm upgrade n8n ./charts/n8n \
   --reuse-values \
   --set image.tag=new-version
 ```

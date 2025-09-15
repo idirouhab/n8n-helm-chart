@@ -70,10 +70,10 @@ Use one of the example configurations for development:
 
 ```bash
 # For basic development
-helm install n8n-dev ./charts/n8n-app -f examples/minimal.yaml
+helm install n8n-dev ./charts/n8n -f examples/minimal.yaml
 
 # For testing enterprise features (requires license)
-helm install n8n-dev ./charts/n8n-app -f examples/production-s3.yaml
+helm install n8n-dev ./charts/n8n -f examples/production-s3.yaml
 ```
 
 ### 4. Access n8n
@@ -93,13 +93,13 @@ Always validate your changes:
 
 ```bash
 # Lint the chart
-helm lint charts/n8n-app
+helm lint charts/n8n
 
 # Test template rendering
-helm template test-release charts/n8n-app -f examples/minimal.yaml --dry-run
+helm template test-release charts/n8n -f examples/minimal.yaml --dry-run
 
 # Install with dry-run to validate against cluster
-helm install test-release charts/n8n-app -f examples/minimal.yaml --dry-run
+helm install test-release charts/n8n -f examples/minimal.yaml --dry-run
 ```
 
 ### Example Validation
@@ -110,7 +110,7 @@ Test all examples to ensure they work correctly:
 # Test each example configuration
 for example in examples/*.yaml; do
   echo "Testing $example..."
-  helm template test charts/n8n-app -f "$example" --dry-run > /dev/null
+  helm template test charts/n8n -f "$example" --dry-run > /dev/null
   if [ $? -eq 0 ]; then
     echo "✓ $example is valid"
   else
@@ -125,13 +125,13 @@ Test actual deployments with different configurations:
 
 ```bash
 # Test minimal setup
-helm install n8n-test ./charts/n8n-app -f examples/minimal.yaml
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=n8n-app --timeout=300s
+helm install n8n-test ./charts/n8n -f examples/minimal.yaml
+kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=n8n --timeout=300s
 helm uninstall n8n-test
 
 # Test production setup (if you have enterprise license)
-helm install n8n-test ./charts/n8n-app -f examples/production-s3.yaml
-kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=n8n-app --timeout=300s
+helm install n8n-test ./charts/n8n -f examples/production-s3.yaml
+kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=n8n --timeout=300s
 helm uninstall n8n-test
 ```
 
@@ -139,8 +139,8 @@ helm uninstall n8n-test
 
 ### Chart Development
 
-1. **Template Changes**: Modify files in `charts/n8n-app/templates/`
-2. **Values**: Update `charts/n8n-app/values.yaml` for new configuration options
+1. **Template Changes**: Modify files in `charts/n8n/templates/`
+2. **Values**: Update `charts/n8n/values.yaml` for new configuration options
 3. **Examples**: Add/update examples in `examples/` directory
 4. **Documentation**: Update relevant documentation
 
@@ -155,7 +155,7 @@ helm uninstall n8n-test
 ### Chart Structure
 
 ```
-charts/n8n-app/
+charts/n8n/
 ├── Chart.yaml          # Chart metadata
 ├── values.yaml         # Default values
 ├── templates/

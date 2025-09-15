@@ -1,5 +1,5 @@
 apiVersion: v2
-name: n8n-app
+name: n8n
 version: 0.13.0
 kubeVersion: '>=1.25.0-0'
 icon: >-
@@ -18,3 +18,4 @@ sources:
 maintainers:
   - name: Idir Ouhab Meskin
     email: ideas@prompt-and-play.com
+

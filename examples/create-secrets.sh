@@ -134,7 +134,7 @@ echo
 echo "  Next steps:"
 echo "  1. Choose a values file from the examples/ directory"
 echo "  2. Customize it for your environment"
-echo "  3. Deploy with: helm install n8n ./charts/n8n-app -f your-values.yaml"
+echo "  3. Deploy with: helm install n8n ./charts/n8n -f your-values.yaml"
 echo
 
 # Save encryption key to file for backup

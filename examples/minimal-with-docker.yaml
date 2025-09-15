@@ -92,7 +92,7 @@ serviceAccount:
 #    # When prompted for database password, use: n8npassword
 #
 # 3. Deploy:
-#    helm install n8n-minimal ./charts/n8n-app -f examples/minimal-with-docker.yaml
+#    helm install n8n-minimal ./charts/n8n -f examples/minimal-with-docker.yaml
 #
 # 4. Access:
 #    kubectl port-forward service/n8n-minimal-main 8080:5678
