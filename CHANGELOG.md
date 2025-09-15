@@ -16,6 +16,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Change name of chart from n8n-app to n8n ([7dde340](https://github.com/idirouhab/n8n-helm-chart/commit/7dde340632750cc90f310b0a1e47940286d3a018))
 
+
+### Bug Fixes
+
+* Add more verbose logs for CI ([f7d8730](https://github.com/idirouhab/n8n-helm-chart/commit/f7d87309307d6210ebebb98185379689b398e1e1))
+
+
+### Miscellaneous Chores
+
+* **main:** release 1.0.0 ([#28](https://github.com/idirouhab/n8n-helm-chart/issues/28)) ([643268c](https://github.com/idirouhab/n8n-helm-chart/commit/643268caabc6f99948e7a18e77bde31eceb25d79))
+
+## [1.0.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.13.0...v1.0.0) (2025-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* Change name of chart from n8n-app to n8n
+
+### Features
+
+* Change name of chart from n8n-app to n8n ([7dde340](https://github.com/idirouhab/n8n-helm-chart/commit/7dde340632750cc90f310b0a1e47940286d3a018))
+
 ## [0.13.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.12.0...v0.13.0) (2025-09-14)
 
 
