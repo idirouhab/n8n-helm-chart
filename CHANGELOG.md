@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/idirouhab/n8n-helm-chart/compare/v1.0.0...v1.0.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* support managed service accounts and flexible service account ([#32](https://github.com/idirouhab/n8n-helm-chart/issues/32)) ([702c5f8](https://github.com/idirouhab/n8n-helm-chart/commit/702c5f8dfb89e3b7241f63e263e0b1e1f635d164))
+
 ## [1.0.0](https://github.com/idirouhab/n8n-helm-chart/compare/v0.13.0...v1.0.0) (2025-09-15)
 
 
