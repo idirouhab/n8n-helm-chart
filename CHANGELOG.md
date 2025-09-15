@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.1...v1.1.2) (2025-09-15)
+
+
+### Bug Fixes
+
+* Add new_release_published=true to release job output ([36d8d25](https://github.com/idirouhab/n8n-helm-chart/commit/36d8d25bf07d8afa4371221750d736639fde5d6c))
+
 ## [1.1.1](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.0...v1.1.1) (2025-09-15)
 
 
