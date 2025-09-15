@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.0.1...v1.1.0) (2025-09-15)
+
+
+### Features
+
+* Change release generation ([#34](https://github.com/idirouhab/n8n-helm-chart/issues/34)) ([0031d63](https://github.com/idirouhab/n8n-helm-chart/commit/0031d63e905189afebe01b4cfa76f2dc1cf46ad3))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
