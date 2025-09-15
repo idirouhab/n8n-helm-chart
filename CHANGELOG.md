@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.2...v1.1.3) (2025-09-15)
+
+
+### Bug Fixes
+
+* Use latest version to publish to OCI ([da69a84](https://github.com/idirouhab/n8n-helm-chart/commit/da69a849938bcd14a9fe3f8cfae6bea84b961992))
+
 ## [1.1.2](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.1...v1.1.2) (2025-09-15)
 
 
