@@ -375,3 +375,22 @@ s3:
     forcePathStyle: false                      # <-- Force path-style URLs (for S3-compatible providers)
     # Additional S3 environment variables
     extraEnv: []
+
+# ----- Extra Manifests -----
+# Additional Kubernetes manifests to deploy alongside n8n
+extraManifests: []
+  # Example: OpenShift Route
+  # - apiVersion: route.openshift.io/v1
+  #   kind: Route
+  #   metadata:
+  #     name: n8n-route
+  #   spec:
+  #     to:
+  #       kind: Service
+  #       name: n8n-main
+  #       weight: 100
+  #     port:
+  #       targetPort: http
+  #     tls:
+  #       termination: edge
+  #       insecureEdgeTerminationPolicy: Redirect
