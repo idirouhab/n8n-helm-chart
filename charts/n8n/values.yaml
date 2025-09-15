@@ -135,7 +135,21 @@ rbac:
   create: true
 
 serviceAccount:
+  # Create a new service account for n8n pods
   create: true
+  # Service account name - supports multiple configuration scenarios:
+  #
+  # 1. Create new service account (default):
+  #    create: true
+  #    name: "n8n"  # <-- Custom name, or leave empty to use chart fullname
+  #
+  # 2. Use existing/managed service account (e.g., created by Terraform):
+  #    create: false
+  #    name: "my-terraform-service-account"
+  #
+  # 3. Use no service account (pods run with default permissions):
+  #    create: false
+  #    name: ""  # <-- Empty or omit entirely
   name: n8n
   # AWS IAM Role ARN for IRSA (IAM Roles for Service Accounts)
   # Required when s3.auth.autoDetect=true for AWS S3 access
