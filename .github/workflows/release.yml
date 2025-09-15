@@ -37,7 +37,19 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: |
+          SEMANTIC_OUTPUT=$(npx semantic-release 2>&1)
+          echo "$SEMANTIC_OUTPUT"
+
+          if echo "$SEMANTIC_OUTPUT" | grep -q "Published release"; then
+            echo "new_release_published=true" >> $GITHUB_OUTPUT
+            # Extract version from the output or git tags
+            VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
+            echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            echo "new_release_version=" >> $GITHUB_OUTPUT
+          fi
 
   publish:
     runs-on: ubuntu-latest
