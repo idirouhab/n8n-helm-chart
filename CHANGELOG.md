@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.4...v1.1.5) (2025-09-16)
+
+
+### Bug Fixes
+
+* Use schema for postgresql ([#37](https://github.com/idirouhab/n8n-helm-chart/issues/37)) ([94df9c3](https://github.com/idirouhab/n8n-helm-chart/commit/94df9c33ab1eeb7e6262ebf91749a1653b3628c5))
+
 ## [1.1.4](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.3...v1.1.4) (2025-09-15)
 
 
