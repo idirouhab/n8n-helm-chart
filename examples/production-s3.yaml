@@ -47,6 +47,7 @@ database:
   host: "your-postgres-host.com"  # Replace with your PostgreSQL endpoint
   port: 5432
   database: n8n
+  schema: "public"                 # PostgreSQL schema name
   user: n8n
   passwordSecret:
     name: "n8n-db-secret"
