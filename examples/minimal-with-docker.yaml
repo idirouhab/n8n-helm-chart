@@ -24,6 +24,7 @@ database:
   host: "host.docker.internal"  # For Docker Desktop, use "localhost" for direct connection
   port: 5432
   database: n8n
+  schema: "public"               # PostgreSQL schema name
   user: n8n
   passwordSecret:
     name: "n8n-db-secret"

@@ -41,6 +41,7 @@ database:
   host: "your-postgres-host.com"
   port: 5432
   database: n8n_enterprise
+  schema: "public"                    # PostgreSQL schema name
   user: n8n
   passwordSecret:
     name: "n8n-enterprise-db-secret"
