@@ -1,3 +1,9 @@
+## [1.2.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.5...v1.2.0) (2025-09-18)
+
+### Features
+
+* Create release only under certain commit types and ignore chore ([#38](https://github.com/idirouhab/n8n-helm-chart/issues/38)) ([be60ae7](https://github.com/idirouhab/n8n-helm-chart/commit/be60ae754659ad0657dd8d6cd068ba006b05c1ef))
+
 ## [1.1.5](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.4...v1.1.5) (2025-09-16)
 
 
