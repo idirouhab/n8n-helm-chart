@@ -184,6 +184,8 @@ Follow the testing guidelines above and ensure:
 
 ### 3. Commit Changes
 
+We use [Conventional Commits](https://www.conventionalcommits.org/) format for automated releases:
+
 ```bash
 git add .
 git commit -m "feat: add new feature description
@@ -193,6 +195,48 @@ Detailed description of what this change does and why.
 - Specific change 1
 - Specific change 2
 "
+```
+
+#### Commit Types and Release Rules
+
+| Type | Scope | Release | Description |
+|------|-------|---------|-------------|
+| `feat` | - | minor | New features |
+| `fix` | - | patch | Bug fixes |
+| `perf` | - | patch | Performance improvements |
+| `docs` | - | patch | Documentation changes |
+| `refactor` | - | patch | Code refactoring |
+| `build` | - | patch | Build system changes |
+| `chore` | - | none | General maintenance |
+| `chore` | `deps` | patch | Production dependency updates |
+| `chore` | `security` | patch | Security updates |
+| `chore` | `infra` | patch | Infrastructure changes |
+| `chore` | `config` | patch | Configuration changes |
+| `chore` | `deps-dev` | none | Development dependency updates |
+| `test` | - | none | Test additions/changes |
+| `ci` | - | none | CI/CD changes |
+| `style` | - | none | Code style changes |
+
+#### Examples
+
+```bash
+# Standard commits
+git commit -m "feat: add support for custom ingress annotations"
+git commit -m "fix: resolve pod startup issues in Redis mode"
+
+# Chore commits that trigger releases
+git commit -m "chore(deps): update n8n to v1.15.0"
+git commit -m "chore(security): update vulnerable dependencies"
+git commit -m "chore(infra): optimize resource requests and limits"
+git commit -m "chore(config): update default PostgreSQL version"
+
+# Chore commits that don't trigger releases
+git commit -m "chore: update .gitignore"
+git commit -m "chore(deps-dev): update helm to v3.13.0"
+git commit -m "ci: improve workflow performance"
+
+# Prevent any release with special scope
+git commit -m "fix(no-release): temporary hotfix for testing"
 ```
 
 ### 4. Push and Create PR
