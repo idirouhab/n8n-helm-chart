@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/idirouhab/n8n-helm-chart/compare/v1.2.0...v1.2.1) (2025-09-18)
+
+### Bug Fixes
+
+* Remove duplicated N8N_WEBHOOK_TIMEOUT variable in deployment file' ([#39](https://github.com/idirouhab/n8n-helm-chart/issues/39)) ([7658f54](https://github.com/idirouhab/n8n-helm-chart/commit/7658f5426367b286e5801de8908bdf5fe9ff5816))
+
 ## [1.2.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.1.5...v1.2.0) (2025-09-18)
 
 ### Features
