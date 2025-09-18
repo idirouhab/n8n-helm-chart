@@ -53,16 +53,8 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           env:
-            {{- if .Values.webhook.enabled }}
-            # Webhook timeout (other webhook config comes from ConfigMap)
-            {{- if .Values.webhook.timeout }}
-            - name: N8N_WEBHOOK_TIMEOUT
-              value: "{{ .Values.webhook.timeout }}"
-            {{- end }}
-            
             {{- with .Values.webhook.extraEnv }}
             {{- toYaml . | nindent 12 }}
-            {{- end }}
             {{- end }}
 
             # Shared configuration from ConfigMap
