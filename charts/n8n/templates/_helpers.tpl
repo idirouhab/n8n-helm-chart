@@ -46,7 +46,7 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 Chart name and version
 */}}
 {{- define "n8n.chart" -}}
-{{ .Chart.Name }}-{{ .Chart.Version }}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end -}}
 
 {{/*
