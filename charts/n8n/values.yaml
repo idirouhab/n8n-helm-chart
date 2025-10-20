@@ -40,6 +40,78 @@ multiMain:
     keyTtl: 10                               # <-- Leader key TTL (seconds)
     checkInterval: 3                         # <-- Leader check interval (seconds)
 
+# ----- Task Runners (external mode with sidecar containers) -----
+taskRunners:
+  # Enable task runners for executing user-provided JavaScript and Python code
+  # When enabled, a sidecar container (n8nio/runners) is added to main and worker pods
+  enabled: false
+
+  # Task runner image configuration
+  image:
+    repository: n8nio/runners
+    # Tag must match n8n version
+    # Leave empty to automatically use the same tag as the main n8n image
+    # Set explicitly only if you need a different version (not recommended)
+    tag: ""
+    pullPolicy: IfNotPresent
+
+  # Task runner mode (only external mode is supported in this chart)
+  mode: external
+
+  # Authentication token for task runners to connect to the broker
+  # This should be a random secure shared secret
+  # You can generate one with: openssl rand -base64 32
+  authToken:
+    # Use existing secret for auth token
+    existingSecret: ""
+    existingSecretKey: ""
+    # Or provide the token directly (not recommended for production)
+    value: ""
+
+  # Task broker configuration (runs within n8n main/worker containers)
+  broker:
+    # Listen address for the task broker (0.0.0.0 allows external connections from sidecar)
+    listenAddress: "0.0.0.0"
+    # Port for task broker to listen on
+    port: 5679
+
+  # Launcher configuration
+  launcher:
+    # Log level for the launcher (debug, info, warn, error)
+    logLevel: info
+    # Number of seconds of inactivity before shutting down task runner process
+    # The launcher will automatically start the runner again when there are new tasks
+    # Set to 0 to disable automatic shutdown
+    autoShutdownTimeout: 15
+
+  # Enable native Python runner (required for Python support, currently in beta)
+  nativePythonRunner: true
+
+  # Custom launcher configuration file
+  # You can mount a custom n8n-task-runners.json to allowlist additional packages
+  customConfig:
+    enabled: false
+    # ConfigMap name containing the custom launcher config
+    configMapName: ""
+    # Key in the ConfigMap containing the config file
+    configMapKey: "n8n-task-runners.json"
+
+  # Resource limits for task runner sidecar containers
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Additional environment variables for task runners
+  extraEnv: []
+  # Example:
+  # extraEnv:
+  #   - name: N8N_RUNNERS_LAUNCHER_LOG_LEVEL
+  #     value: debug
+
 # ----- Main replicas (when multi-main is disabled) -----
 replicaCount: 1
 

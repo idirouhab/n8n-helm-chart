@@ -36,8 +36,15 @@ data:
   
   # Queue configuration (shared across all pods)
   EXECUTIONS_MODE: "queue"
-  N8N_RUNNERS_ENABLED: "true"
-  
+  N8N_RUNNERS_ENABLED: {{ ternary "true" "false" .Values.taskRunners.enabled | quote }}
+
+  # Task Runners configuration (shared across all pods)
+  {{- if .Values.taskRunners.enabled }}
+  N8N_RUNNERS_MODE: {{ .Values.taskRunners.mode | quote }}
+  N8N_RUNNERS_BROKER_LISTEN_ADDRESS: {{ .Values.taskRunners.broker.listenAddress | quote }}
+  N8N_NATIVE_PYTHON_RUNNER: {{ ternary "true" "false" .Values.taskRunners.nativePythonRunner | quote }}
+  {{- end }}
+
   # Redis configuration (shared across all pods)
   {{- if .Values.redis.clusterNodes }}
   QUEUE_BULL_REDIS_CLUSTER_NODES: {{ .Values.redis.clusterNodes | quote }}

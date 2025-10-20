@@ -251,3 +251,71 @@ Environment variables from ConfigMap for webhook processor pods (similar to main
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Task Runners environment variables for n8n broker (main and worker pods)
+*/}}
+{{- define "n8n.taskRunnerBrokerEnv" -}}
+{{- if .Values.taskRunners.enabled }}
+# Task runner broker configuration
+- name: N8N_RUNNERS_ENABLED
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: N8N_RUNNERS_ENABLED
+- name: N8N_RUNNERS_MODE
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: N8N_RUNNERS_MODE
+- name: N8N_RUNNERS_BROKER_LISTEN_ADDRESS
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: N8N_RUNNERS_BROKER_LISTEN_ADDRESS
+- name: N8N_NATIVE_PYTHON_RUNNER
+  valueFrom:
+    configMapKeyRef:
+      name: {{ include "n8n.fullname" . }}
+      key: N8N_NATIVE_PYTHON_RUNNER
+# Task runner auth token (from secret)
+- name: N8N_RUNNERS_AUTH_TOKEN
+  valueFrom:
+    secretKeyRef:
+      {{- if .Values.taskRunners.authToken.existingSecret }}
+      name: {{ .Values.taskRunners.authToken.existingSecret }}
+      key: {{ .Values.taskRunners.authToken.existingSecretKey | default "N8N_RUNNERS_AUTH_TOKEN" }}
+      {{- else }}
+      name: {{ include "n8n.fullname" . }}-task-runners
+      key: N8N_RUNNERS_AUTH_TOKEN
+      {{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
+Task Runners environment variables for runner sidecar containers
+*/}}
+{{- define "n8n.taskRunnerSidecarEnv" -}}
+{{- if .Values.taskRunners.enabled }}
+# Task runner configuration
+- name: N8N_RUNNERS_TASK_BROKER_URI
+  value: "http://localhost:{{ .Values.taskRunners.broker.port }}"
+- name: N8N_RUNNERS_AUTH_TOKEN
+  valueFrom:
+    secretKeyRef:
+      {{- if .Values.taskRunners.authToken.existingSecret }}
+      name: {{ .Values.taskRunners.authToken.existingSecret }}
+      key: {{ .Values.taskRunners.authToken.existingSecretKey | default "N8N_RUNNERS_AUTH_TOKEN" }}
+      {{- else }}
+      name: {{ include "n8n.fullname" . }}-task-runners
+      key: N8N_RUNNERS_AUTH_TOKEN
+      {{- end }}
+- name: N8N_RUNNERS_AUTO_SHUTDOWN_TIMEOUT
+  value: "{{ .Values.taskRunners.launcher.autoShutdownTimeout }}"
+- name: N8N_RUNNERS_LAUNCHER_LOG_LEVEL
+  value: "{{ .Values.taskRunners.launcher.logLevel }}"
+{{- with .Values.taskRunners.extraEnv }}
+{{- toYaml . | nindent 0 }}
+{{- end }}
+{{- end }}
+{{- end }}
