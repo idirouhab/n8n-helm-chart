@@ -1,3 +1,9 @@
+## [1.3.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.2.1...v1.3.0) (2025-10-20)
+
+### Features
+
+* Add task runner support with sidecar containers ([#42](https://github.com/idirouhab/n8n-helm-chart/issues/42)) ([abc6ba1](https://github.com/idirouhab/n8n-helm-chart/commit/abc6ba1ee75269927cdf9d99d9543ceae4e754e4))
+
 ## [1.2.1](https://github.com/idirouhab/n8n-helm-chart/compare/v1.2.0...v1.2.1) (2025-09-18)
 
 ### Bug Fixes
