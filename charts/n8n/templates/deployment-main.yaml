@@ -106,6 +106,9 @@ spec:
             # Core n8n secrets
             {{- include "n8n.coreSecretsEnv" . | nindent 12 }}
 
+            # Task Runners Configuration
+            {{- include "n8n.taskRunnerBrokerEnv" . | nindent 12 }}
+
             {{- with .Values.config.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -160,6 +163,27 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
 
+        {{- if .Values.taskRunners.enabled }}
+        # Task Runner sidecar container
+        - name: task-runner
+          image: "{{ .Values.taskRunners.image.repository }}:{{ default .Values.image.tag .Values.taskRunners.image.tag }}"
+          imagePullPolicy: {{ .Values.taskRunners.image.pullPolicy }}
+
+          env:
+            {{- include "n8n.taskRunnerSidecarEnv" . | nindent 12 }}
+
+          resources:
+            {{- toYaml .Values.taskRunners.resources | nindent 12 }}
+
+          {{- if .Values.taskRunners.customConfig.enabled }}
+          volumeMounts:
+            - name: task-runner-config
+              mountPath: /etc/n8n-task-runners.json
+              subPath: {{ .Values.taskRunners.customConfig.configMapKey }}
+              readOnly: true
+          {{- end }}
+        {{- end }}
+
       # Volumes: prefer PVC, fallback to emptyDir if persistence disabled
       volumes:
         {{- if .Values.persistence.enabled }}
@@ -169,6 +193,11 @@ spec:
         {{- else }}
         - name: data
           emptyDir: {}
+        {{- end }}
+        {{- if and .Values.taskRunners.enabled .Values.taskRunners.customConfig.enabled }}
+        - name: task-runner-config
+          configMap:
+            name: {{ .Values.taskRunners.customConfig.configMapName }}
         {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
