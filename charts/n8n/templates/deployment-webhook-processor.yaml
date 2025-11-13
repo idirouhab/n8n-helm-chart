@@ -36,12 +36,24 @@ spec:
         runAsGroup: {{ .Values.securityContext.runAsGroup }}
       {{- end }}
 
+      {{- with .Values.lifecycle.webhookProcessor.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+
       containers:
         - name: n8n-webhook-processor
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["n8n"]
           args: ["webhook"]
+
+          {{- if .Values.lifecycle.webhookProcessor.preStop.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  {{- toYaml .Values.lifecycle.webhookProcessor.preStop.command | nindent 18 }}
+          {{- end }}
 
           env:
             # Shared configuration from ConfigMap

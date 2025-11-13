@@ -47,10 +47,22 @@ spec:
         runAsGroup: {{ .Values.securityContext.runAsGroup }}
       {{- end }}
 
+      {{- with .Values.lifecycle.main.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+
       containers:
         - name: n8n-main
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          {{- if .Values.lifecycle.main.preStop.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  {{- toYaml .Values.lifecycle.main.preStop.command | nindent 18 }}
+          {{- end }}
 
           env:
             {{- with .Values.webhook.extraEnv }}

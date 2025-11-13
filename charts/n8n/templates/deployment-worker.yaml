@@ -32,14 +32,26 @@ spec:
         runAsGroup: {{ .Values.securityContext.runAsGroup }}
       {{- end }}
 
+      {{- with .Values.lifecycle.worker.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ . }}
+      {{- end }}
+
       containers:
         - name: n8n-worker
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["n8n"]
-          args: 
+          args:
             - "worker"
             - "--concurrency={{ .Values.queueMode.workerConcurrency }}"
+
+          {{- if .Values.lifecycle.worker.preStop.enabled }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  {{- toYaml .Values.lifecycle.worker.preStop.command | nindent 18 }}
+          {{- end }}
 
           env:
             # Shared configuration from ConfigMap
