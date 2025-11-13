@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.3.0...v1.4.0) (2025-11-13)
+
+### Features
+
+* Add graceful shutdown support with lifecycle hooks ([#43](https://github.com/idirouhab/n8n-helm-chart/issues/43)) ([5435a61](https://github.com/idirouhab/n8n-helm-chart/commit/5435a61c8b24a5db492345ceb697424089980b4e))
+
 ## [1.3.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.2.1...v1.3.0) (2025-10-20)
 
 ### Features
