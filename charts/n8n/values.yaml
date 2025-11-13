@@ -275,6 +275,39 @@ probes:
       timeoutSeconds: 5
       failureThreshold: 3
 
+# ----- Lifecycle (graceful shutdown) -----
+lifecycle:
+  # Main pods lifecycle configuration
+  main:
+    terminationGracePeriodSeconds: 60
+    preStop:
+      enabled: true
+      # Sleep to allow pod to be removed from service endpoints before SIGTERM
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep 10"
+  # Worker pods lifecycle configuration
+  worker:
+    terminationGracePeriodSeconds: 60
+    preStop:
+      enabled: true
+      # Sleep to allow current workflow executions to complete
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep 10"
+  # Webhook processor pods lifecycle configuration
+  webhookProcessor:
+    terminationGracePeriodSeconds: 60
+    preStop:
+      enabled: true
+      # Sleep to allow current webhook requests to complete
+      command:
+        - "/bin/sh"
+        - "-c"
+        - "sleep 10"
+
 # ----- Autoscaling -----
 hpa:
   # Main pods autoscaling (UI/API pods)
