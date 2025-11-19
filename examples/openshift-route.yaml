@@ -1,0 +1,87 @@
+# OpenShift deployment with Route instead of Ingress
+# This example shows how to deploy n8n on OpenShift using a Route for external access
+
+# Basic n8n configuration
+replicaCount: 1
+
+# Disable standard Kubernetes Ingress
+ingress:
+  enabled: false
+
+# Use ClusterIP service (Route will handle external access)
+service:
+  type: ClusterIP
+  port: 5678
+
+# Database configuration (required)
+database:
+  type: postgres
+  useExternal: true
+  host: "postgresql.example.com"
+  port: 5432
+  name: "n8n"
+  user: "n8n"
+  passwordSecret:
+    name: "n8n-db-password"
+    key: "password"
+
+# Redis configuration (required for queue mode)
+redis:
+  useExternal: true
+  host: "redis.example.com"
+  port: 6379
+  # Optional: Redis password
+  # passwordSecret:
+  #   name: "redis-password"
+  #   key: "password"
+
+# n8n secrets
+secretRefs:
+  existingSecret: "n8n-core-secrets"
+
+# Deploy OpenShift Route using extraManifests
+extraManifests:
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      name: n8n-route
+      labels:
+        app.kubernetes.io/name: n8n
+        app.kubernetes.io/instance: n8n
+    spec:
+      to:
+        kind: Service
+        name: n8n-main
+        weight: 100
+      port:
+        targetPort: http
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+      # Optional: Custom hostname
+      # host: n8n.apps.cluster.example.com
+
+# OpenShift-specific resource limits (optional)
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+# Security context for OpenShift
+podSecurityContext:
+  runAsNonRoot: true
+  # OpenShift will assign a random UID
+  # runAsUser: 1001
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  # OpenShift will assign a random UID
+  # runAsUser: 1001
