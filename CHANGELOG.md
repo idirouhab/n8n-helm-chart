@@ -1,3 +1,9 @@
+## [1.4.1](https://github.com/idirouhab/n8n-helm-chart/compare/v1.4.0...v1.4.1) (2026-08-06)
+
+### Documentation
+
+* Deprecate chart in favor of official n8n chart ([#44](https://github.com/idirouhab/n8n-helm-chart/issues/44)) ([95cbfc8](https://github.com/idirouhab/n8n-helm-chart/commit/95cbfc8bc1c29be9aa5b4061b6fa60325b1e74b5))
+
 ## [1.4.0](https://github.com/idirouhab/n8n-helm-chart/compare/v1.3.0...v1.4.0) (2025-11-13)
 
 ### Features
