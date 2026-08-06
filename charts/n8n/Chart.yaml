@@ -6,6 +6,7 @@ icon: >-
   https://raw.githubusercontent.com/n8n-io/n8n/master/packages/editor-ui/public/images/n8n-logo.png
 description: n8n with optional queue mode, multi-main, task runners, PostgreSQL/Redis, Ingress, HPA, PDB.
 type: application
+deprecated: true
 keywords:
   - n8n
   - automation
