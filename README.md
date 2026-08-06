@@ -1,6 +1,7 @@
 # n8n Helm Chart
 
-> ⚠️ This is a **community-maintained** Helm chart and is not officially supported by the n8n team.
+> [!WARNING]
+> **Deprecated:** This repository is no longer maintained. Use the official n8n Helm chart in [`n8n-io/n8n-hosting`](https://github.com/n8n-io/n8n-hosting/tree/main/charts/n8n) for new deployments and upgrades.
 
 ## Installation
 
