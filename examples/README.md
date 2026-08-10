@@ -7,6 +7,7 @@ This directory contains common configuration examples for different deployment s
 ### Community Examples (No License Required)
 - **[minimal.yaml](./minimal.yaml)** - Single main pod with external PostgreSQL and Redis
 - **[minimal-with-docker.yaml](./minimal-with-docker.yaml)** - Quick testing with Docker containers
+- **[openshift-route.yaml](./openshift-route.yaml)** - OpenShift deployment with Route instead of Ingress
 
 ### Enterprise Examples (License Required)
 - **[production-s3.yaml](./production-s3.yaml)** - Production setup with multi-main, webhooks, S3 storage, and autoscaling
